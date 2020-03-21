@@ -1,0 +1,26 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+autologging = "*"
+pytest-watch = "*"
+mypy = "*"
+black = "==19.10b0"
+pytest-cov = "*"
+codecov = "*"
+pipfile = "*"
+twine = "*"
+
+[packages]
+gym = "*"
+numpy = "*"
+# Require older version of tensorflow
+tensorflow = "==1.15.2"
+keras-rl = {ref = "add-multi-agent",git = "https://github.com/dat-boris/keras-rl.git",editable = true}
+wandb = "*"
+playtest = "*"
+
+[requires]
+python_version = "3.7"
