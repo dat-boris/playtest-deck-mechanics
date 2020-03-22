@@ -1,4 +1,3 @@
-
 from spice_road import test_state, test_action, test_game
 from spice_road.components import test_resources, test_cards
 
