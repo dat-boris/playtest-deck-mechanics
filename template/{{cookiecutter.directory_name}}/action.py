@@ -1,4 +1,6 @@
-from playtest.action import ActionBoolean, ActionBooleanRange, ActionFactory as BaseAF
+from playtest.action import (
+    ActionBoolean, ActionBooleanRange, ActionWaitRange, ActionFactory as BaseAF
+)
 
 from .state import State
 
@@ -34,4 +36,5 @@ class ActionFactory(BaseAF):
     range_classes = [
         ActionHitRange,
         ActionSkipRange,
+        ActionWaitRange,
     ]
