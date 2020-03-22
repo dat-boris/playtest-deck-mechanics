@@ -27,6 +27,23 @@ To regenerate the rules, please run:
 ```
 
 
+## Creating a new game
+
+To create a new game, you can use the cookie cutter template
+
+```
+$ pipenv install --dev
+$ pipenv run cookiecutter template/
+playtest-deck-mechanics) Boriss-MacBook-Pro:playtest-deck-mechanics borislau$ cookiecutter template/
+directory_name [example_game]:
+game_name [Example Game]:
+bgg_url [https://www.boardgamegeek.com/boardgame/7156/uno-hello-kitty]:
+```
+
+Which will then create a scaffold for your game.  Then you can start creating
+the game as expected.
+
+
 ## Disclaimer
 
 All games referenced is in reference to the original game, and are
