@@ -1,7 +1,7 @@
 from playtest.components import Component
 
 
-class Resources(Component):
+class Resource(Component):
     def to_data(self):
         pass
 
@@ -9,6 +9,8 @@ class Resources(Component):
         pass
 
 
-class Caravan(Resources):
+class Caravan(Resource):
     """A set of resources, with a 10 item limit."""
-    pass
+
+    def discard_to(self, down_to: int):
+        raise NotImplementedError()

@@ -74,5 +74,5 @@ def test_start_setup(state: State):
 
     assert len(state.trader_river) == 6
     assert len(state.scoring_river) == 5
-    assert state.scoring_river[0]['coins'] == Coins("G" * NUMBER_OF_PLAYERS)
-    assert state.scoring_river[1]['coins'] == Coins("S" * NUMBER_OF_PLAYERS)
+    assert state.scoring_river[0]['coins'] == Coin("G" * NUMBER_OF_PLAYERS)
+    assert state.scoring_river[1]['coins'] == Coin("S" * NUMBER_OF_PLAYERS)
