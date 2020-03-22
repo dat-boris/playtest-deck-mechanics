@@ -12,13 +12,14 @@ pytest-cov = "*"
 codecov = "*"
 pipfile = "*"
 twine = "*"
+cookiecutter = "*"
 
 [packages]
 gym = "*"
 numpy = "*"
 # Require older version of tensorflow
 tensorflow = "==1.15.2"
-keras-rl = {ref = "add-multi-agent",git = "https://github.com/dat-boris/keras-rl.git",editable = true}
+keras-rl = {editable = true,git = "https://github.com/dat-boris/keras-rl.git",ref = "add-multi-agent"}
 wandb = "*"
 playtest = "*"
 

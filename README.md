@@ -1,6 +1,6 @@
 # Playtest deck mechanics
 
-This is a repository that is my collection of game mechnics that I simplify
+This is a repository that is my collection of game mechanics that I simplify
 into a 52 card deck, and a few tokens and dices.
 
 This makes use of the [PyPlaytest](https://github.com/dat-boris/py-playtest)
