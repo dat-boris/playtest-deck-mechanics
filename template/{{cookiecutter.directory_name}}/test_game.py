@@ -27,8 +27,10 @@ def test_round(game: Game):
 
     next_player_id, possible_actions, _ = next(game_gen)
     assert next_player_id == 0
-    assert list(map(str, possible_actions)) == ["hit", "skip"], \
-        "Player 1 have 2 choice of actions."
+    assert list(map(str, possible_actions)) == [
+        "hit",
+        "skip",
+    ], "Player 1 have 2 choice of actions."
 
 
 @pytest.mark.xfail

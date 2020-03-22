@@ -1,4 +1,3 @@
-
 from .test_state import test_setup
 from .components.test_cards import test_deck
 from .test_game import test_round, test_victory
@@ -13,5 +12,5 @@ RULE_TESTS = [
     test_deck,
     test_round,
     test_hit,
-    test_victory
+    test_victory,
 ]

@@ -1,5 +1,8 @@
 from playtest.action import (
-    ActionBoolean, ActionBooleanRange, ActionWaitRange, ActionFactory as BaseAF
+    ActionBoolean,
+    ActionBooleanRange,
+    ActionWaitRange,
+    ActionFactory as BaseAF,
 )
 
 from .state import State

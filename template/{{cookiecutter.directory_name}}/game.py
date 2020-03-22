@@ -8,7 +8,6 @@ NUMBER_OF_ROUNDS = 3
 
 
 class Game(BaseGame[State, ActionFactory, Param]):
-
     def __init__(self, param):
         self.state = State(param=param)
         self.action_factory = ActionFactory(param=param)
@@ -22,7 +21,7 @@ class Game(BaseGame[State, ActionFactory, Param]):
         for i in range(self.number_of_players):
             # Note that get_player_action is a generator
             action = yield from self.get_player_action(
-                i,
-                accepted_range=[ActionHitRange, ActionSkipRange])
+                i, accepted_range=[ActionHitRange, ActionSkipRange]
+            )
             self.announcer.say(f"Player {i+1} took action {action}")
             action.resolve(self.state, player_id=i)
