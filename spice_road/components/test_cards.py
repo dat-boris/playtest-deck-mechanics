@@ -1,7 +1,5 @@
 import pytest
 
-from .cards import Deck
-
 
 @pytest.mark.xfail
 def test_trade_exchange():

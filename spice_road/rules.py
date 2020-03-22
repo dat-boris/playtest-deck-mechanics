@@ -7,6 +7,7 @@ RULE_TESTS = [
     by `mk_rules.py`
     """,
     test_state.test_setup,
+    test_state.test_start_setup,
     test_resources.test_resources,
     test_resources.test_caravan,
     test_cards.test_trade_conversion,
