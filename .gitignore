@@ -1,3 +1,6 @@
+# Template generated example game
+example_game
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
