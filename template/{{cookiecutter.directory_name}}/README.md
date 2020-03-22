@@ -1,11 +1,32 @@
 # {{cookiecutter.game_name}}
 
 
+*Game designer*: {{cookiecutter.designer}}
+
 *Boardgame geek URL*: {{cookiecutter.bgg_url}}
+
+*Purchase link*: {{cookiecutter.buy_url}}
 
 > TODO: Add brief description of the game.
 
-## To play
+## Disclaimer
+
+This simulation is meant to be a tool for studying the game mechanics of the
+original game. This is derivative work under *fair use*, as a mean to model and
+study of and critique of the original game.
+
+Any questions, please do reach out to the author of the repository.
+
+Original link and purchase are referenced in the game, and interested
+parties are encouraged to buy the original version of the game.
+
+
+## Resources
+
+> TODO: Link to resources (e.g. open rule book, card list, design discussion)
+
+
+## To run the simulation
 
 See root folder's README
 
