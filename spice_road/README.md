@@ -1,9 +1,34 @@
 # Century: Spice Road
 
+*Game designer*: Emerson Matsuuchi
 
 *Boardgame geek URL*: https://boardgamegeek.com/boardgame/209685/century-spice-road
 
-> TODO: Add brief description of the game.
+*Purchase link*: https://www.planbgames.com/en/all-our-games/8-century-spice-road.html
+
+Century: Spice Road is a engine builder game, focus on the timing of how you
+trying to achieve your victory card mechanics.  This is a great game to study,
+with it's elegant mechanism for building tension within the game.
+
+
+## Disclaimer
+
+This simulation is meant to be a tool for studying the game mechanics of the
+original game. This is derivative work under *fair use*, as a mean to model and
+study of and critique of the original game.
+
+Any questions, please do reach out to the author of the repository.
+
+Original link and purchase are referenced in the game, and interested
+parties are encouraged to buy the original version of the game.
+
+
+## Resources
+
+* [Homemade Rule book](https://www.fgbradleys.com/rules/rules5/Century-Spice_Road_EN_Rules.pdf)
+* [Reference card list](https://boardgamegeek.com/thread/1896169/list-all-cards-merchants-points-and-analysis-their)
+* [Jamey Stegmaier's comments](https://www.youtube.com/watch?v=FBL3nxNtbik)
+
 
 ## To play
 

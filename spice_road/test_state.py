@@ -19,11 +19,19 @@ def state() -> State:
 def test_setup(state: State):
     """## Setup instructions
 
-    Describe your game here, for example your game will require
-    a set of cards, and each player will have their own hands.
+    This game consists of multiple players, with 2 game decks:
 
-    And each player will have their own hands.  None of these
-    players have any cards.
+    * Trader cards
+    * Scoring cards
+    * A set of resource cubes
+    * Set of gold and Silver coins
+
+    Each player will have in their own playing area:
+
+    * A hand of trader cards not visible to others
+    * A hand of trader cards which has been used
+    *
+    * A hand of sc
     """
     assert isinstance(state.deck, Deck)
     assert len(state.deck) == 52
