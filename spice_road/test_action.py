@@ -1,4 +1,4 @@
-
+import pytest
 
 from .state import State
 from .action import ActionHit
@@ -7,17 +7,51 @@ from .action import ActionHit
 from .test_state import state
 
 
-def test_hit(state: State):
-    """### Getting a card
+@pytest.mark.xfail
+def test_trade(state: State):
+    """## Trade action
 
-    A player can decide to get a card. A card will be dealt from the player's
+    The trade action will take resources from your caravan and output it to your
+    caravan.
+    """
+    raise NotImplementedError()
+
+
+@pytest.mark.xfail
+def test_acquire(state: State):
+    """## Acquiring cards
+
+    To acquire cards, you take a spice of your choice and put it onto the each
+    card to the left of your caravan, and pick up the card
+    """
+    raise NotImplementedError()
+
+
+@pytest.mark.xfail
+def test_rest(state: State):
+    """## Rest
+
+    To rest, you take all the cards you have played before back into your
     hand.
     """
-    ps1 = state.get_player_state(0)
+    raise NotImplementedError()
 
-    assert len(ps1.hand) == 0
 
-    action = ActionHit()
-    action.resolve(state, player_id=0)
+@pytest.mark.xfail
+def test_score(state: State):
+    """## Score
 
-    assert len(ps1.hand) == 1
+    To score, you pick a scoring card that you can satisfy with
+    the number of spices.
+
+    If you take the first or 2nd point cards, then take the gold / silver coin
+    from it.
+    """
+    raise NotImplementedError()
+
+
+@pytest.mark.xfail
+def test_score_depleted_gold(state: State):
+    """If you taken the last gold coin, move the silver coin to the stack
+    """
+    raise NotImplementedError()

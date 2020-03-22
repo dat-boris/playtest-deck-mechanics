@@ -1,13 +1,24 @@
-from playtest.components import Card
+import pytest
 
 from .cards import Deck
 
 
-def test_deck():
-    """## Deck
+@pytest.mark.xfail
+def test_trade_exchange():
+    """## Trade card: Exchange
 
-    The deck consists of 52 cards.  Just standard deck of cards.
+    There are two types of trade cards.  The exchange cards take a set of
+    source spices to the target.  As long as you have enough spices,
+    you can trade the spices for a set in the target space for spice.
     """
-    d = Deck(all_cards=True)
-    assert len(d) == 52
-    assert Card("Ad") in d, "Ace of diamond is in the deck"
+    raise NotImplementedError()
+
+
+@pytest.mark.xfail
+def test_trade_conversion():
+    """## Trade card: Conversion
+
+    Another set of cards is to allow conversion.  The conversion card
+    allow us to follow the rule of resources to upgrade the spices.
+    """
+    raise NotImplementedError()

@@ -30,8 +30,7 @@ def test_setup(state: State):
 
     * A hand of trader cards not visible to others
     * A hand of trader cards which has been used
-    *
-    * A hand of sc
+    * A hand of scoring cards which have been claimed
     """
     assert isinstance(state.deck, Deck)
     assert len(state.deck) == 52

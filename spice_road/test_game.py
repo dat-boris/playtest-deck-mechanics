@@ -13,28 +13,38 @@ def game() -> Game:
     return g
 
 
+@pytest.mark.xfail
 def test_round(game: Game):
     """# Game round
 
-    Now let's talk about each round of the game.
-
-    At each round, the player can ask for a card, or not.  If they ask for
-    a card, it is dealt to them.
-
-    If not, no card is dealt.
+    Each player takes one of the above action from the rounds.
     """
-    game_gen = game.play_round()
+    # Test playing player 0
+    game_gen = game.play_round(0)
 
-    next_player_id, possible_actions, _ = next(game_gen)
-    assert next_player_id == 0
-    assert list(map(str, possible_actions)) == ["hit", "skip"], \
-        "Player 1 have 2 choice of actions."
+    raise NotImplementedError()
+
+
+@pytest.mark.xfail
+def test_end_game(game: Game):
+    """## Game end
+
+    Game end after any of the players have achieved their 5th card.
+    (Note: in 2-3 players, 6th card).
+    """
+    raise NotImplementedError()
 
 
 @pytest.mark.xfail
 def test_victory(game: Game):
     """# Victory condition
 
-    Well, we have not thought much about this!  We will get to this.
+    * Player counts up their scoring cards.
+    * Each gold is 3 points
+    * Each silver coin is 1 point.
+    * Each resources that is better than tumeric win the game.
+
+    The player with most points win.  In case of tie, the player with the
+    later turn order win.
     """
     raise NotImplementedError()
