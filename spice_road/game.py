@@ -23,3 +23,9 @@ class Game(BaseGame[State, ActionFactory, Param]):
             action = yield from self.get_player_action(i)
             self.announcer.say(f"Player {i+1} took action {action}")
             action.resolve(self.state, player_id=i)
+
+    def is_end(self) -> bool:
+        raise NotImplementedError()
+
+    def count_victory_points(self, player_id: int) -> int:
+        raise NotImplementedError()
