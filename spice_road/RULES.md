@@ -16,23 +16,36 @@ Each player will have in their own playing area:
 * A hand of trader cards which has been used
 * A hand of scoring cards which have been claimed
 
+## Starting setup
+
+Each player, in order, gets:
+* Start player: 3 turmeric
+* 2nd and 3rd players: 4 turmeric each
+* 4th and 5th players: 3 turmeric and 1 saffron each
+
+Also open up:
+* 6 trader cards.
+* 5 scoring card, with the first one in the river contain same
+ number of gold coins as player, 2nd one with same number of silver
+ coins as player.
+
 ## Resources
 
 There are 4 set of resources:
 
 * Tumeric (Yellow)
-* Saffaron (Red)
+* Saffron (Red)
 * Cardamom (Green)
 * Cinnamon (Black)
 
 Each of these resources are in order of the value, and there are upgrade cards
-that can upgarde these resources to the next level.
+that can upgrade these resources to the next level.
 
 See card_upgrade for detail.
 
 ## Caravan
 
-Each okayer have caravan cards to which you can put your spice.
+Each player have caravan cards to which you can put your spice.
 
 The Caravan card is limited to 10 spices, and you cannot exceed the capacity
 of the caravan card
@@ -75,10 +88,10 @@ If you take the first or 2nd point cards, then take the gold / silver coin
 from it.
 
 If you taken the last gold coin, move the silver coin to the stack
-
+    
 
 # Game play
-
+    
 
 # Game round
 
@@ -95,3 +108,6 @@ Game end after any of the players have achieved their 5th card.
 * Each gold is 3 points
 * Each silver coin is 1 point.
 * Each resources that is better than tumeric win the game.
+
+The player with most points win.  In case of tie, the player with the
+later turn order win.
