@@ -34,10 +34,12 @@ To create a new game, you can use the cookie cutter template
 ```
 $ pipenv install --dev
 $ pipenv run cookiecutter template/
-playtest-deck-mechanics) Boriss-MacBook-Pro:playtest-deck-mechanics borislau$ cookiecutter template/
+# Following questions will be asked....
 directory_name [example_game]:
+designer [John Doe]:
 game_name [Example Game]:
-bgg_url [https://www.boardgamegeek.com/boardgame/7156/uno-hello-kitty]:
+buy_url [http://original_publisher_link.com/]:
+bgg_url [https://www.boardgamegeek.com/boardgame/...]:
 ```
 
 Which will then create a scaffold for your game.  Then you can start creating
