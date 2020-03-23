@@ -8,8 +8,6 @@ import argparse
 from inspect import cleandoc
 from importlib import import_module
 
-from example_game.rules import RULE_TESTS
-
 
 def get_docs(module_name: str) -> str:
 
