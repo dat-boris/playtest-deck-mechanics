@@ -3,7 +3,7 @@ import pytest
 from .game import Game
 from .constants import Param
 
-NUMBER_OF_PLAYERS = 2
+NUMBER_OF_PLAYERS = 4
 
 
 @pytest.fixture
@@ -20,7 +20,11 @@ def test_round(game: Game):
     Each player takes one of the above action from the rounds.
     """
     # Test playing player 0
-    game_gen = game.play_round(0)
+    game_gen = game.play_round()
+    next_player_id, possible_actions, _ = next(game_gen)
+
+    assert next_player_id == 0
+    assert list(map(str, possible_actions)) == ["...", "rest"]
 
     raise NotImplementedError()
 

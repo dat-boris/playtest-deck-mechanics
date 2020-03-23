@@ -32,8 +32,9 @@ def test_trade_conversion():
     r = ConversionCard(2)
     assert r.to_data() == "Convert(2)"
     assert r.can_trade(Resource("YY"))
-    assert r.trade(Resource("YY")) == Resource("RR"), \
-        "Upgrade any 2 resources according to resource rule"
+    assert r.trade(Resource("YY")) == Resource(
+        "RR"
+    ), "Upgrade any 2 resources according to resource rule"
 
 
 @pytest.mark.xfail

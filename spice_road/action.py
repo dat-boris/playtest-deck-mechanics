@@ -1,4 +1,8 @@
 from playtest.action import (
+    ActionSingleValue,
+    ActionSingleValueRange,
+    ActionSingleValue,
+    ActionValueInSetRange,
     ActionBoolean,
     ActionBooleanRange,
     ActionWaitRange,
@@ -8,8 +12,8 @@ from playtest.action import (
 from .state import State
 
 
-class ActionSkip(ActionBoolean[State]):
-    key = "skip"
+class ActionTrade(ActionSingleValue[State]):
+    key = "trade"
 
     def resolve(self, s: State, player_id: int, a=None):  # type: ignore
         if a:
@@ -17,27 +21,48 @@ class ActionSkip(ActionBoolean[State]):
         pass
 
 
-class ActionSkipRange(ActionBooleanRange[ActionSkip, State]):
-    instance_class = ActionSkip
+class ActionTradeRange(ActionSingleValueRange[ActionTrade, State]):
+    instance_class = ActionTrade
 
 
-class ActionHit(ActionBoolean[State]):
-    key = "hit"
-
-    def resolve(self, s: State, player_id: int, a=None):  # type: ignore
-        if a:
-            a.say(f"Give 1 card to player {player_id}!")
-
-        s.deck.deal(s.players[player_id].hand)
+class ActionConvert(ActionSingleValue[State]):
+    key = "exchange"
 
 
-class ActionHitRange(ActionBooleanRange[ActionHit, State]):
-    instance_class = ActionHit
+class ActionConvertRange(ActionValueInSetRange[ActionConvert, State]):
+    instance_class = ActionConvert
+
+
+class ActionAcquire(ActionSingleValue[State]):
+    key = "acquire"
+
+
+class ActionAcquireRange(ActionValueInSetRange[ActionAcquire, State]):
+    instance_class = ActionAcquire
+
+
+class ActionRest(ActionBoolean[State]):
+    key = "rest"
+
+
+class ActionRestRange(ActionBooleanRange[ActionRest, State]):
+    instance_class = ActionRest
+
+
+class ActionScore(ActionSingleValue[State]):
+    key = "score"
+
+
+class ActionScoreRange(ActionValueInSetRange[ActionScore, State]):
+    instance_class = ActionScore
 
 
 class ActionFactory(BaseAF):
     range_classes = [
-        ActionHitRange,
-        ActionSkipRange,
+        ActionTradeRange,
+        ActionConvertRange,
+        ActionAcquireRange,
+        ActionRestRange,
+        ActionScoreRange,
         ActionWaitRange,
     ]

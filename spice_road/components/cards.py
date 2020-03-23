@@ -1,5 +1,3 @@
-
-
 from playtest.components import Card, Deck as BaseDeck
 from .resources import Resource
 

@@ -70,6 +70,6 @@ def test_caravan():
     c = Caravan("RGBY")
     assert isinstance(c, Resource), "Caravan is a subtype of resource"
 
-    c = Caravan("B"*5 + "Y" * 10)
+    c = Caravan("B" * 5 + "Y" * 10)
     c.discard_to(10)
     assert c.stack == {Resource.BLACK: 5, Resource.YELLOW: 5}
