@@ -22,9 +22,7 @@ class BaseRiver(Deck, Generic[C, R]):
         self.resources = [self.generic_resource("") for _ in self.cards]
 
     def add_resource(self, pos: int, resource: R):
-        assert (
-            len(self.resources) >= pos and self.resources[pos]
-        ), "No resource found at position {pos}"
+        assert len(self.resources) >= pos, f"No resource found at position {pos}"
         self.resources[pos].add_resource(resource)
 
     def __getitem__(self, i: int):

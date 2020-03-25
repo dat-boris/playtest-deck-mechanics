@@ -34,8 +34,7 @@ class TraderCard(Card):
     @staticmethod
     def get_all_cards():
         data = read_yaml(
-            os.path.join(os.path.dirname(
-                os.path.realpath(__file__)), "trader.yml")
+            os.path.join(os.path.dirname(os.path.realpath(__file__)), "trader.yml")
         )
         return [
             SpellCard(f"{d['src']} -> {d['dst']}", uid=i) for i, d in enumerate(data)
@@ -44,23 +43,56 @@ class TraderCard(Card):
     def can_trade(self, r: Resource) -> bool:
         return r.has_required(self.src)
 
-    def trade_in_place(self, r: Resource) -> None:
-        assert self.can_trade(r)
-        r.sub_resource(self.src)
-        r.add_resource(self.dst)
-
     def trade(self, r: Resource) -> Resource:
         r2 = copy(r)
-        self.trade_in_place(r2)
+        r2.sub_resource(self.src)
+        r2.add_resource(self.dst)
         return r2
 
 
 class ConversionCard(TraderCard):
+    re_value = re.compile(r"Convert\((\d+)\)")
+
+    @classmethod
+    def value_to_struct(cls, value) -> Dict:
+        """Get structured data from string"""
+        m = cls.re_value.match(value)
+        assert m, f"Value should be in valid format: {value}"
+        return {
+            "c": int(m.group(1)),
+        }
+
+    @classmethod
+    def struct_to_value(cls, struct: Dict) -> str:
+        return f"Convert({struct['c']})"
+
+    @property
+    def c(self) -> int:
+        """Number of resource you can convert"""
+        return self.value_to_struct(self.value)["c"]
+
+    @property
+    def src(self) -> Resource:
+        raise KeyError()
+
+    @property
+    def dst(self) -> Resource:
+        raise KeyError()
+
+    @staticmethod
+    def get_all_cards():
+        return [ConversionCard("Convert(2)") * 2]
+
     def can_trade(self, r: Resource) -> bool:
-        raise NotImplementedError()
+        return len(r) >= self.c
 
     def trade(self, r: Resource) -> Resource:
-        raise NotImplementedError()
+        assert len(r) == self.c, f"Must provide exact count of resource ({r})"
+        r2 = Resource("")
+        for val in r.value:
+            # Upgrade the resource
+            r2.add_resource(Resource(Resource.upgrade_char(val)))
+        return r2
 
 
 class TraderDeck(BaseDeck[Card]):

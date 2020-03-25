@@ -22,14 +22,13 @@ def test_trade_exchange():
     assert r.trade(Resource("RRR")) == Resource("RBG")
 
 
-@pytest.mark.xfail
 def test_trade_conversion():
     """## Trade card: Conversion
 
     Another set of cards is to allow conversion.  The conversion card
     allow us to follow the rule of resources to upgrade the spices.
     """
-    r = ConversionCard(2)
+    r = ConversionCard("Convert(2)")
     assert r.to_data() == "Convert(2)"
     assert r.can_trade(Resource("YY"))
     assert r.trade(Resource("YY")) == Resource(

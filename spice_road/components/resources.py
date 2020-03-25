@@ -30,6 +30,16 @@ class Resource(Component):
         return self.value_to_struct(self.value)
 
     @classmethod
+    def upgrade_char(cls, s: str) -> str:
+        assert len(s) == 1, "Can only upgrade one at a time"
+        token_name = cls.str_lookup[s]
+        try:
+            token_next = cls.all_resources[cls.all_resources.index(token_name) + 1]
+        except IndexError:
+            return s
+        return cls.reverse_lookup(token_next)
+
+    @classmethod
     def value_to_struct(cls, s: str):
         c = {r: 0 for r in cls.all_resources}
         for r in s:
@@ -40,10 +50,16 @@ class Resource(Component):
         return c
 
     @classmethod
+    def reverse_lookup(cls, s):
+        rev_lookup = dict({v: k for k, v in cls.str_lookup.items()})
+        return rev_lookup[s]
+
+    @classmethod
     def struct_to_value(cls, stack: Dict[str, int]) -> str:
-        reverse_lookup = dict({v: k for k, v in cls.str_lookup.items()})
         return "".join(
-            sorted(["".join([reverse_lookup[r]] * count) for r, count in stack.items()])
+            sorted(
+                ["".join([cls.reverse_lookup(r)] * count) for r, count in stack.items()]
+            )
         )
 
     @classmethod
@@ -52,6 +68,10 @@ class Resource(Component):
 
     def __eq__(self, x) -> bool:
         return self.value == x.value
+
+    def __len__(self) -> int:
+        """Return number of resources"""
+        return len(self.value)
 
     def __init__(self, data: str = ""):
         assert isinstance(data, str), "Resource only takes string"
@@ -124,7 +144,7 @@ class Resource(Component):
 class Caravan(Resource):
     """A set of resources, with a 10 item limit."""
 
-    def discard_to(self, down_to: int=10):
+    def discard_to(self, down_to: int = 10):
         data = self.stack
         total_value = sum(data.values())
         for c in self.all_resources:

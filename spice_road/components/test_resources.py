@@ -70,15 +70,27 @@ def test_caravan():
 
     c = Caravan("Y")
     c.discard_to(10)
-    assert c.stack == {Resource.BLACK: 0, Resource.YELLOW: 1,
-                       Resource.GREEN: 0, Resource.RED: 0}
+    assert c.stack == {
+        Resource.BLACK: 0,
+        Resource.YELLOW: 1,
+        Resource.GREEN: 0,
+        Resource.RED: 0,
+    }
 
     c = Caravan("Y" * 10 + "B" * 5)
     c.discard_to(10)
-    assert c.stack == {Resource.BLACK: 5, Resource.YELLOW: 5,
-                       Resource.GREEN: 0, Resource.RED: 0}
+    assert c.stack == {
+        Resource.BLACK: 5,
+        Resource.YELLOW: 5,
+        Resource.GREEN: 0,
+        Resource.RED: 0,
+    }
 
     c = Caravan("Y" * 0 + "R" * 5 + "B" * 15)
     c.discard_to(10)
-    assert c.stack == {Resource.BLACK: 10, Resource.YELLOW: 0,
-                       Resource.GREEN: 0, Resource.RED: 0}
+    assert c.stack == {
+        Resource.BLACK: 10,
+        Resource.YELLOW: 0,
+        Resource.GREEN: 0,
+        Resource.RED: 0,
+    }
