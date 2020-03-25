@@ -20,6 +20,7 @@ class Resource(Component):
     max_amount = 0xFFFF
     # Note this is order from least to most valuable
     all_resources = [YELLOW, RED, GREEN, BLACK]
+    all_resources_short = "YRGB"
 
     str_lookup = {"R": RED, "G": GREEN, "B": BLACK, "Y": YELLOW}
 

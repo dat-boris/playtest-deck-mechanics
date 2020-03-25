@@ -9,7 +9,7 @@ from .resources import Resource
 
 
 def read_yaml(file_name):
-    return yaml.load_all(open(file_name, 'r'))
+    return yaml.load_all(open(file_name, "r"))
 
 
 class TraderCard(Card):
@@ -42,8 +42,7 @@ class TraderCard(Card):
     @staticmethod
     def get_all_cards():
         data = read_yaml(
-            os.path.join(os.path.dirname(
-                os.path.realpath(__file__)), "trader.yml")
+            os.path.join(os.path.dirname(os.path.realpath(__file__)), "trader.yml")
         )
         return [
             SpellCard(f"{d['src']} -> {d['dst']}", uid=i) for i, d in enumerate(data)
@@ -118,12 +117,9 @@ class ScoringCard(Card):
     @classmethod
     def get_all_cards(cls):
         data = read_yaml(
-            os.path.join(os.path.dirname(
-                os.path.realpath(__file__)), "scoring.yml")
+            os.path.join(os.path.dirname(os.path.realpath(__file__)), "scoring.yml")
         )
-        return [
-            cls(f"{d['target']} ({d['vp']})", uid=i) for i, d in enumerate(data)
-        ]
+        return [cls(f"{d['target']} ({d['vp']})", uid=i) for i, d in enumerate(data)]
 
     # ----------------
     # Get structured property

@@ -74,14 +74,15 @@ def test_exchange(state: State):
     # Now from resolve you are going to get a new action range
     # Since the convert card can ask for new value!
     new_action_range = action.resolve(state, player_id=0)
-    assert str(new_action_range) == 'convert(["YY", "YR", "YG", "RG"])'
+    assert isinstance(new_action_range, ActionConvertRange)
+    assert str(new_action_range) == "convert([RG,YG,YR,YY])"
 
-    action = ActionConvert("YR")  # type: ignore
-    assert new_action_range.is_valid(action)
+    action_convert = ActionConvert("YR")  # type: ignore
+    assert new_action_range.is_valid(action_convert)
 
-    empty_action_range = action.resolve(state, player_id=0)
+    empty_action_range = action_convert.resolve(state, player_id=0)
     assert empty_action_range is None
-    assert len(ps.hand) == 0, "Card removed from player hand"
+    assert len(ps.hand) == 1, "Card removed from player hand"
     assert len(ps.used_hand) == 1, "Card removed"
     assert ps.used_hand[0].test_watermark == "Traded card"
     assert ps.caravan == Resource("YRGG"), "YR is upgraded"
