@@ -15,6 +15,8 @@ def read_yaml(file_name):
 class TraderCard(Card):
     re_value = re.compile(r"([RGBY]*)\s*->\s*([RGBY]*)")
 
+    total_unique_cards: int = 52
+
     @classmethod
     def value_to_struct(cls, value) -> Dict:
         """Get structured data from string"""
@@ -59,6 +61,8 @@ class TraderCard(Card):
 
 class ConversionCard(TraderCard):
     re_value = re.compile(r"Convert\((\d+)\)")
+
+    total_unique_cards: int = 52
 
     @classmethod
     def value_to_struct(cls, value) -> Dict:
@@ -108,6 +112,8 @@ class TraderDeck(BaseDeck[Card]):
 
 class ScoringCard(Card):
     regex_parse = re.compile(r"([RGBY]+) \((\d+)\)")
+
+    total_unique_cards: int = 52
 
     @classmethod
     def get_all_cards(cls):

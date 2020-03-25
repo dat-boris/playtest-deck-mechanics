@@ -21,7 +21,6 @@ from .components.river import TraderRiver, ScoringRiver
 from .components.coins import Coin
 
 
-@pytest.mark.xfail
 def test_trade(state: State):
     """## Trade action
 
@@ -41,7 +40,7 @@ def test_trade(state: State):
 
     # Assert - how do we consider the trade?
     action_range = ActionTradeRange(state, player_id=0)
-    assert str(action_range) == "trade(1,2)"
+    assert str(action_range) == "trade([1,2])"
 
     action = ActionTrade(2)
     assert action_range.is_valid(action)
@@ -65,7 +64,7 @@ def test_exchange(state: State):
     action_range = ActionConvertRange(state, player_id=0)
     assert str(action_range) == 'convert("YY", "YR", "YG", "RG")'
 
-    action = ActionConvert("YR")
+    action = ActionConvert("YR")  # type: ignore
     assert action_range.is_valid(action)
 
     action.resolve(state, player_id=0)
