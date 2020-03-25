@@ -36,7 +36,6 @@ def test_trade_conversion():
     ), "Upgrade any 2 resources according to resource rule"
 
 
-@pytest.mark.xfail
 def test_scoring_card():
     """## Scoring card
 

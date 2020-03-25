@@ -1,9 +1,15 @@
+import os
 import re
+import yaml
 from copy import copy
 from typing import Dict
 
 from playtest.components import Card, Deck as BaseDeck
 from .resources import Resource
+
+
+def read_yaml(file_name):
+    return yaml.load_all(open(file_name, 'r'))
 
 
 class TraderCard(Card):
@@ -34,7 +40,8 @@ class TraderCard(Card):
     @staticmethod
     def get_all_cards():
         data = read_yaml(
-            os.path.join(os.path.dirname(os.path.realpath(__file__)), "trader.yml")
+            os.path.join(os.path.dirname(
+                os.path.realpath(__file__)), "trader.yml")
         )
         return [
             SpellCard(f"{d['src']} -> {d['dst']}", uid=i) for i, d in enumerate(data)
@@ -100,10 +107,54 @@ class TraderDeck(BaseDeck[Card]):
 
 
 class ScoringCard(Card):
+    regex_parse = re.compile(r"([RGBY]+) \((\d+)\)")
+
+    @classmethod
+    def get_all_cards(cls):
+        data = read_yaml(
+            os.path.join(os.path.dirname(
+                os.path.realpath(__file__)), "scoring.yml")
+        )
+        return [
+            cls(f"{d['target']} ({d['vp']})", uid=i) for i, d in enumerate(data)
+        ]
+
+    # ----------------
+    # Get structured property
+    # -----------------
+
+    @classmethod
+    def value_to_struct(cls, value):
+        m = cls.regex_parse.match(value)
+        assert m, f"Must be of right format {value}"
+        return {
+            "target": Resource(m.group(1)),
+            "victory_point": int(m.group(2)),
+        }
+
+    @classmethod
+    def struct_to_value(cls, struct):
+        target: Resource = struct["target"]
+        return f"{target.value} ({struct['victory_point']})"
+
+    @property
+    def target(self) -> Resource:
+        return self.value_to_struct(self.value)["target"]
+
+    @property
+    def victory_point(self) -> int:
+        return self.value_to_struct(self.value)["victory_point"]
+
+    def __init__(self, value, uid=0, test_watermark=None):
+        assert self.regex_parse.match(
+            value
+        ), f"Input string should be of right format {value}"
+        super().__init__(value, uid=uid, test_watermark=test_watermark)
+
     def check_enough(self, r: Resource) -> bool:
         """Check if the resource is sufficient for the cards
         """
-        raise NotImplementedError()
+        return r.has_required(self.target)
 
 
 class ScoringDeck(BaseDeck[ScoringCard]):
