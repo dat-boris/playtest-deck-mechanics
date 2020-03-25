@@ -45,30 +45,42 @@ def test_trade(state: State):
     action = ActionTrade(2)
     assert action_range.is_valid(action)
 
-    action.resolve(state, player_id=0)
+    empty_action_range = action.resolve(state, player_id=0)
+    assert empty_action_range is None
     assert len(ps.hand) == 2, "Card removed from player hand"
     assert len(ps.used_hand) == 1, "Card removed"
     assert ps.used_hand[0].test_watermark == "Traded card"
     assert ps.caravan == Resource("R"), "Traded two yellow as red"
 
 
-@pytest.mark.xfail
 def test_exchange(state: State):
     ps = state.players[0]
     ps.hand = TraderDeck(
-        [ConversionCard("Convert(2)", uid=1, test_watermark="Traded card"),]
+        [
+            ConversionCard("Convert(2)", uid=1, test_watermark="Traded card"),
+            TraderCard("YY -> R", uid=2),
+        ]
     )
     ps.caravan = Caravan("YYRG")
 
     # Assert - how do we consider the trade?
-    action_range = ActionConvertRange(state, player_id=0)
-    assert str(action_range) == 'convert("YY", "YR", "YG", "RG")'
+    action_range = ActionTradeRange(state, player_id=0)
+    assert str(action_range) == "trade([1,2])"
 
-    action = ActionConvert("YR")  # type: ignore
+    # Now let's trade for the convert card
+    action = ActionTrade(1)
     assert action_range.is_valid(action)
 
-    action.resolve(state, player_id=0)
+    # Now from resolve you are going to get a new action range
+    # Since the convert card can ask for new value!
+    new_action_range = action.resolve(state, player_id=0)
+    assert str(new_action_range) == 'convert(["YY", "YR", "YG", "RG"])'
 
+    action = ActionConvert("YR")  # type: ignore
+    assert new_action_range.is_valid(action)
+
+    empty_action_range = action.resolve(state, player_id=0)
+    assert empty_action_range is None
     assert len(ps.hand) == 0, "Card removed from player hand"
     assert len(ps.used_hand) == 1, "Card removed"
     assert ps.used_hand[0].test_watermark == "Traded card"
