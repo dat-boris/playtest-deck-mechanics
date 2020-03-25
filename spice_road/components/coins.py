@@ -1,9 +1,9 @@
-from playtest.components import Component
+from .resources import Resource
 
 
-class Coin(Component):
-    def to_data(self):
-        pass
+class Coin(Resource):
+    GOLD = "gold"
+    SILVER = "silver"
 
-    def reset(self):
-        pass
+    str_lookup = {"G": GOLD, "S": SILVER}
+    all_resources = [GOLD, SILVER]

@@ -1,3 +1,4 @@
+import pytest
 from typing import Dict, Type
 
 
@@ -30,10 +31,11 @@ class PlayerState(SubState):
         self.hand = TraderDeck([])
         self.used_hand = TraderDeck([])
         self.scored = ScoringDeck([])
-        self.coins = Coin({})
-        self.caravan = Caravan({})
+        self.coins = Coin("")
+        self.caravan = Caravan("")
 
 
+@pytest.mark.xfail
 class State(FullState[PlayerState]):
     player_state_class = PlayerState
 
@@ -56,3 +58,22 @@ class State(FullState[PlayerState]):
         self.scoring_river = ScoringRiver([])
         self.trader_river = TraderRiver([])
         super().__init__(param=param)
+
+        self.reset()
+
+    def reset(self):
+        super().reset()
+        # Deal tokens to players
+        number_of_players = len(self.players)
+        assert 2 <= number_of_players <= 5
+        # According to rules, number of players th
+        player_assets = ["YYY", "YYYY", "YYYY", "YYYR", "YYYR"]
+        for i, p in enumerate(self.players):
+            p.caravan = Caravan(player_assets[i])
+
+        # Setting up the river
+        self.scoring_deck.deal(self.scoring_river, count=5)
+        self.scoring_river.add_resource(0, Coin("G" * number_of_players))
+        self.scoring_river.add_resource(1, Coin("S" * number_of_players))
+
+        self.trader_deck.deal(self.trader_river, count=6)

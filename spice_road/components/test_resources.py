@@ -4,7 +4,6 @@ import pytest
 from spice_road.components.resources import Resource, Caravan
 
 
-@pytest.mark.xfail
 def test_resources():
     """## Resources
 

@@ -5,7 +5,13 @@ from .constants import Param
 
 from .action import ActionAcquire
 
-from .components.cards import TraderCard, TraderDeck, ConversionCard, ScoringCard, ScoringDeck
+from .components.cards import (
+    TraderCard,
+    TraderDeck,
+    ConversionCard,
+    ScoringCard,
+    ScoringDeck,
+)
 from .components.resources import Resource, Caravan
 from .components.river import TraderRiver, ScoringRiver
 from .components.coins import Coin
@@ -26,22 +32,21 @@ def game() -> Game:
                 "card": ScoringCard("RRRR (5)", uid=0, test_watermark="Scored"),
                 "coin": Coin("GGGG"),
             },
-            {"card": ScoringCard("RRRRR (6)", uid=1), "coin": Coin("SSSS"), },
-            {"card": ScoringCard("RRRRRR (7)", uid=2), "coin": Coin(""), },
-            {"card": ScoringCard("RRRRRRR (8)", uid=3), "coin": Coin(""), },
+            {"card": ScoringCard("RRRRR (6)", uid=1), "coin": Coin("SSSS"),},
+            {"card": ScoringCard("RRRRRR (7)", uid=2), "coin": Coin(""),},
+            {"card": ScoringCard("RRRRRRR (8)", uid=3), "coin": Coin(""),},
         ]
     )
     state.trader_river = TraderRiver(
         [
             # Most expensive, need pay 1 coin for each item
-            {"card": TraderCard("-> YY", uid=0),
-             "resources": Resource("YYY"), },
+            {"card": TraderCard("-> YY", uid=0), "resources": Resource("YYY"),},
             {
                 "card": TraderCard("-> YY", uid=1, test_watermark="Obtained"),
                 "resources": Resource("YY"),
             },
-            {"card": TraderCard("-> YY", uid=2), "resources": Resource("Y"), },
-            {"card": TraderCard("-> YY", uid=3), "resources": Resource(""), },
+            {"card": TraderCard("-> YY", uid=2), "resources": Resource("Y"),},
+            {"card": TraderCard("-> YY", uid=3), "resources": Resource(""),},
         ]
     )
     ps = state.players[0]
@@ -82,9 +87,9 @@ def test_end_game(game: Game):
     """
     assert not game.is_end(), "Game ongoing if nobody have scoring cards"
     ps = game.s.get_player_state(0)
-    ps.scored = ScoringDeck([
-        ScoringCard("RRRR (5)", uid=0, test_watermark="Scored")
-    ] * 5)
+    ps.scored = ScoringDeck(
+        [ScoringCard("RRRR (5)", uid=0, test_watermark="Scored")] * 5
+    )
     assert game.is_end(), "Once have 5+ scored card, game is ending"
 
 

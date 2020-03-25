@@ -52,14 +52,13 @@ def test_setup(state: State):
         assert len(player_state.scored) == 0
 
 
-@pytest.mark.xfail
 def test_start_setup(state: State):
     """## Starting setup
 
     Each player, in order, gets:
     * Start player: 3 turmeric
     * 2nd and 3rd players: 4 turmeric each
-    * 4th and 5th players: 3 turmeric and 1 saffron each
+    * 4th and 5th players: 3 turmeric and 1 saffron each
 
     Also open up:
     * 6 trader cards.
@@ -67,12 +66,12 @@ def test_start_setup(state: State):
      number of gold coins as player, 2nd one with same number of silver
      coins as player.
     """
-    assert state.players[0].caravan == "YYY"
-    assert state.players[1].caravan == "YYYY"
-    assert state.players[2].caravan == "YYYY"
-    assert state.players[3].caravan == "YYYR"
+    assert state.players[0].caravan == Caravan("YYY")
+    assert state.players[1].caravan == Caravan("YYYY")
+    assert state.players[2].caravan == Caravan("YYYY")
+    assert state.players[3].caravan == Caravan("YYYR")
 
     assert len(state.trader_river) == 6
     assert len(state.scoring_river) == 5
-    assert state.scoring_river[0]["coins"] == Coin("G" * NUMBER_OF_PLAYERS)
-    assert state.scoring_river[1]["coins"] == Coin("S" * NUMBER_OF_PLAYERS)
+    assert state.scoring_river[0]["resources"] == Coin("G" * NUMBER_OF_PLAYERS)
+    assert state.scoring_river[1]["resources"] == Coin("S" * NUMBER_OF_PLAYERS)
