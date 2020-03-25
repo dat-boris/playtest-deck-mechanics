@@ -1,0 +1,57 @@
+# A demo set of trader card
+count: 5
+src: ""
+dst: YY
+---
+count: 5
+src: ""
+dst: YR
+---
+count: 1
+src: ""
+dst: B
+---
+count: 2
+src: YYY
+dst: B
+---
+count: 2
+src: R
+dst: YYY
+---
+count: 2
+src: B
+dst: RRYY
+---
+count: 2
+src: RR
+dst: BYY
+---
+count: 2
+src: B
+dst: RRR
+---
+count: 2
+src: RR
+dst: BYY
+---
+count: 2
+src: B
+dst: RRR
+---
+count: 2
+src: RRR
+dst: BB
+---
+count: 2
+src: YYYYY
+dst: BB
+---
+count: 1
+src: YYY
+dst: RRR
+---
+count: 2
+src: YY
+dst: RR
+---

@@ -2,9 +2,9 @@ import pytest
 
 
 from .cards import TraderCard, ScoringCard, ConversionCard
+from .resources import Resource
 
 
-@pytest.mark.xfail
 def test_trade_exchange():
     """## Trade card: Exchange
 
