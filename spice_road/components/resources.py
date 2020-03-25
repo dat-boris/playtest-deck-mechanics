@@ -18,6 +18,7 @@ class Resource(Component):
 
     value: str
     max_amount = 0xFFFF
+    # Note this is order from least to most valuable
     all_resources = [YELLOW, RED, GREEN, BLACK]
 
     str_lookup = {"R": RED, "G": GREEN, "B": BLACK, "Y": YELLOW}
@@ -123,5 +124,12 @@ class Resource(Component):
 class Caravan(Resource):
     """A set of resources, with a 10 item limit."""
 
-    def discard_to(self, down_to: int):
-        raise NotImplementedError()
+    def discard_to(self, down_to: int=10):
+        data = self.stack
+        total_value = sum(data.values())
+        for c in self.all_resources:
+            if data[c] > 0 and total_value > down_to:
+                to_discard = min(total_value - down_to, data[c])
+                data[c] -= to_discard
+                total_value -= to_discard
+        self.value = self.struct_to_value(data)

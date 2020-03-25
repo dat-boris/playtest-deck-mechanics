@@ -6,4 +6,4 @@ class Coin(Resource):
     SILVER = "silver"
 
     str_lookup = {"G": GOLD, "S": SILVER}
-    all_resources = [GOLD, SILVER]
+    all_resources = [SILVER, GOLD]

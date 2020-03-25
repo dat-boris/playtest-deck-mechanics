@@ -10,8 +10,8 @@ RULE_TESTS = [
     test_state.test_start_setup,
     test_resources.test_resources,
     test_resources.test_caravan,
-    test_cards.test_trade_conversion,
     test_cards.test_trade_exchange,
+    test_cards.test_trade_conversion,
     """# Actions
     Each round, you can take one of the following actions:
     """,
