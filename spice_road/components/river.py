@@ -1,4 +1,4 @@
-from typing import List, Dict, TypeVar, Sequence, Generic, Type
+from typing import List, Dict, TypeVar, Sequence, Generic, Type, Tuple
 
 from playtest.components import Card, Deck
 
@@ -17,9 +17,13 @@ class BaseRiver(Deck, Generic[C, R]):
     generic_resource: Type[R]
     resources: List[R]
 
-    def __init__(self, cards=[], resources=[], **kwargs):
+    def __init__(self, cards=[], resources=None, **kwargs):
         super().__init__(cards, **kwargs)
-        self.resources = [self.generic_resource("") for _ in self.cards]
+        self.resources = resources
+        if resources is None:
+            self.resources = [self.generic_resource("") for _ in self.cards]
+        assert len(self.resources) == len(self.cards)
+        assert all([isinstance(r, self.generic_resource) for r in self.resources])
 
     def add_resource(self, pos: int, resource: R):
         assert len(self.resources) >= pos, f"No resource found at position {pos}"
@@ -40,6 +44,11 @@ class BaseRiver(Deck, Generic[C, R]):
         self.cards.remove(card)
         # TODO: remove token
         raise NotImplementedError()
+
+    def pop_at(self, pos:int) -> Tuple[C, R]:
+        card = self.cards.pop(pos)
+        resource = self.resources.pop(pos)
+        return card, resource
 
 
 class ScoringRiver(BaseRiver[ScoringCard, Coin]):

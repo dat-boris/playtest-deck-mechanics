@@ -1,5 +1,7 @@
 import pytest
 
+from playtest.logger import Announcer
+
 from .state import State
 from .action import (
     ActionTrade,
@@ -89,7 +91,6 @@ def test_exchange(state: State):
     assert ps.caravan == Resource("YRGG"), "YR is upgraded"
 
 
-@pytest.mark.xfail
 def test_acquire(state: State):
     """## Acquiring cards
 
@@ -98,33 +99,34 @@ def test_acquire(state: State):
     """
     # Arrange: Trade river set
     state.trader_river = TraderRiver(
-        [
+        cards=[
             # Most expensive, need pay 1 coin for each item
-            {"card": TraderCard("-> YY", uid=0), "resources": Resource("YYY"),},
-            {
-                "card": TraderCard("-> YY", uid=1, test_watermark="obtained"),
-                "resources": Resource("YY"),
-            },
-            {"card": TraderCard("-> YY", uid=2), "resources": Resource("Y"),},
-            {"card": TraderCard("-> YY", uid=3), "resources": Resource(""),},
+             TraderCard("-> Y", uid=90),
+             TraderCard("-> YY", uid=91, test_watermark="obtained"),
+             TraderCard("-> YYY", uid=92),
+             TraderCard("-> YYYY", uid=93),
+        ],
+        resources=[
+            Resource("YYY"),
+            Resource("YY"),
+            Resource("Y"),
+            Resource(""),
         ]
     )
     ps = state.players[0]
     ps.caravan = Caravan("YY")
 
     action_range = ActionAcquireRange(state, player_id=0)
-    # TODO: this is difficult! How do you acquire based on position?
-    #       This is because now position is important, as is that allows us to
-    #       Examine the most possible, intiuative way to process this?
 
     assert (
         str(action_range) == "acquire([0,1,2])"
     ), "We have 2 resource, and can obtain the top 3 cards from river"
 
+    # Acquire based on position
     action = ActionAcquire(1)
     assert action_range.is_valid(action)
 
-    action.resolve(state, player_id=0)
+    action.resolve(state, player_id=0, a=Announcer())
 
     assert ps.hand[0].test_watermark == "obtained", "New card in player hands"
     assert ps.caravan == Caravan("Y"), "Put down one resource for top card"
@@ -132,11 +134,10 @@ def test_acquire(state: State):
     assert state.trader_river[0]["resources"] == Resource(
         "YYYY"
     ), "One extra resource put on head of the river"
-    assert state.trader_river[1]["card"].uid == 2, "Card shifted over by 1"
-    assert state.trader_river[1]["resource"] == Resource("Y"), "No resource added"
+    assert state.trader_river[1]["card"].uid == 92, "Card shifted over by 1"
+    assert state.trader_river[1]["resources"] == Resource("Y"), "No resource added"
 
 
-@pytest.mark.xfail
 def test_rest(state: State):
     """## Rest
 

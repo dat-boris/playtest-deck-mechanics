@@ -60,10 +60,10 @@ class ActionTradeRange(ActionValueInSetRange[ActionTrade, State]):
         if len(ps.hand) == 0:
             self.actionable = False
             return
-        self.actionable = True
         self.values_set = set(
             [i for i, s in enumerate(ps.hand) if s.can_trade(ps.caravan)]
         )
+        self.actionable = bool(self.values_set)
 
     def value_to_position(self, value) -> int:
         return value
@@ -78,19 +78,22 @@ class ActionConvert(ActionSingleValue[State]):
         list(
             map(
                 lambda s: "".join(s),
-                combinations_with_replacement(Resource.all_resources_short, r=1),
+                combinations_with_replacement(
+                    Resource.all_resources_short, r=1),
             )
         )
         + list(
             map(
                 lambda s: "".join(s),
-                combinations_with_replacement(Resource.all_resources_short, r=2),
+                combinations_with_replacement(
+                    Resource.all_resources_short, r=2),
             )
         )
         + list(
             map(
                 lambda s: "".join(s),
-                combinations_with_replacement(Resource.all_resources_short, r=3),
+                combinations_with_replacement(
+                    Resource.all_resources_short, r=3),
             )
         )
     )
@@ -145,16 +148,49 @@ class ActionAcquire(ActionSingleValue[State]):
     maximum_value: int = Param.number_of_trader_slots
 
     def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
-        # TODO: not implemented
+        # Now leave the resources you need
+        river = s.trader_river
+        ps = s.get_player_state(player_id)
+        for i in range(self.value):
+            river.add_resource(i, ps.caravan.pop_lower(1))
+
+        # Get the card from trader slot + resources
+        card, resource = river.pop_at(self.value)
+        if a:
+            a.say(f"Player {player_id+1} acquired {card} (r={resource})")
+        ps.hand.add(card)
         return None
 
 
 class ActionAcquireRange(ActionValueInSetRange[ActionAcquire, State]):
     instance_class = ActionAcquire
+    max_values_in_set = Param.number_of_trader_slots
+
+    def __init__(self, state: State, player_id: int):
+        ps: PlayerState = state.get_player_state(player_id)
+        number_of_resources = len(ps.caravan)
+        self.values_set = set(
+            [
+                i for i, s in enumerate(state.trader_deck)
+                if i <= number_of_resources
+            ]
+        )
+        self.actionable = bool(self.values_set)
+
+    def value_to_position(self, value) -> int:
+        return value
+
+    def position_to_value(self, pos: int):
+        return pos
 
 
 class ActionRest(ActionBoolean[State]):
     key = "rest"
+
+    def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
+        ps = s.get_player_state(player_id)
+        ps.used_hand.deal(ps.hand, all=True)
+        return None
 
 
 class ActionRestRange(ActionBooleanRange[ActionRest, State]):

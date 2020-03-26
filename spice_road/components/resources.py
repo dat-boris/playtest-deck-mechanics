@@ -35,7 +35,8 @@ class Resource(Component):
         assert len(s) == 1, "Can only upgrade one at a time"
         token_name = cls.str_lookup[s]
         try:
-            token_next = cls.all_resources[cls.all_resources.index(token_name) + 1]
+            token_next = cls.all_resources[cls.all_resources.index(
+                token_name) + 1]
         except IndexError:
             return s
         return cls.reverse_lookup(token_next)
@@ -59,7 +60,8 @@ class Resource(Component):
     def struct_to_value(cls, stack: Dict[str, int]) -> str:
         return "".join(
             sorted(
-                ["".join([cls.reverse_lookup(r)] * count) for r, count in stack.items()]
+                ["".join([cls.reverse_lookup(r)] * count)
+                 for r, count in stack.items()]
             )
         )
 
@@ -114,14 +116,16 @@ class Resource(Component):
         theirs = required.stack
         assert sorted(my.keys()) == self.get_all_resources()
         self.value = self.struct_to_value(
-            {res: my_count - theirs.get(res, 0) for res, my_count in my.items()}
+            {res: my_count - theirs.get(res, 0)
+             for res, my_count in my.items()}
         )
 
     def sub_with_remainder(self, required: "Resource") -> "Resource":
         my = self.stack
         theirs = required.stack
         assert sorted(my.keys()) == self.get_all_resources()
-        result = {res: my_count - theirs.get(res, 0) for res, my_count in my.items()}
+        result = {res: my_count - theirs.get(res, 0)
+                  for res, my_count in my.items()}
         new_my_value = {}
         remainder = {}
         for k, v in result.items():
@@ -138,19 +142,28 @@ class Resource(Component):
         theirs = required.stack
         assert sorted(my.keys()) == self.get_all_resources()
         self.value = self.struct_to_value(
-            {res: my_count + theirs.get(res, 0) for res, my_count in my.items()}
+            {res: my_count + theirs.get(res, 0)
+             for res, my_count in my.items()}
         )
+
+    def pop_lower(self, amount) -> "Resource":
+        """Pop number of cheapest resources"""
+        assert len(self) >= amount, f"Must have {amount} resources"
+        data = self.stack
+        popped_data: Dict[str, int] = {}
+        for c in self.all_resources:
+            if data[c] > 0 and sum(popped_data.values()) <= amount:
+                to_discard = min(amount, data[c])
+                data[c] -= to_discard
+                popped_data[c] = to_discard
+                amount -= to_discard
+        self.value = self.struct_to_value(data)
+        return self.__class__(self.struct_to_value(popped_data))
 
 
 class Caravan(Resource):
     """A set of resources, with a 10 item limit."""
 
     def discard_to(self, down_to: int = 10):
-        data = self.stack
-        total_value = sum(data.values())
-        for c in self.all_resources:
-            if data[c] > 0 and total_value > down_to:
-                to_discard = min(total_value - down_to, data[c])
-                data[c] -= to_discard
-                total_value -= to_discard
-        self.value = self.struct_to_value(data)
+        if len(self) >= down_to:
+            self.pop_lower(len(self) - down_to)
