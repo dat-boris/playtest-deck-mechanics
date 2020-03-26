@@ -31,18 +31,19 @@ def test_trade(state: State):
     ps = state.players[0]
     ps.hand = TraderDeck(
         [
-            TraderCard("-> YY", uid=1),
-            TraderCard("YY -> R", uid=2, test_watermark="Traded card"),
-            TraderCard("YYY -> R", uid=3, test_watermark="Not tradable"),
+            TraderCard("-> YY", uid=91),
+            TraderCard("YY -> R", uid=92, test_watermark="Traded card"),
+            TraderCard("YYY -> R", uid=93, test_watermark="Not tradable"),
         ]
     )
     ps.caravan = Caravan("YY")
 
     # Assert - how do we consider the trade?
+    # Note that this is based on position of the card slot (zero based)
     action_range = ActionTradeRange(state, player_id=0)
-    assert str(action_range) == "trade([1,2])"
+    assert str(action_range) == "trade([0,1])"
 
-    action = ActionTrade(2)
+    action = ActionTrade(1)
     assert action_range.is_valid(action)
 
     empty_action_range = action.resolve(state, player_id=0)
@@ -57,18 +58,18 @@ def test_exchange(state: State):
     ps = state.players[0]
     ps.hand = TraderDeck(
         [
-            ConversionCard("Convert(2)", uid=1, test_watermark="Traded card"),
-            TraderCard("YY -> R", uid=2),
+            ConversionCard("Convert(2)", uid=91, test_watermark="Traded card"),
+            TraderCard("YY -> R", uid=92),
         ]
     )
     ps.caravan = Caravan("YYRG")
 
     # Assert - how do we consider the trade?
     action_range = ActionTradeRange(state, player_id=0)
-    assert str(action_range) == "trade([1,2])"
+    assert str(action_range) == "trade([0,1])"
 
     # Now let's trade for the convert card
-    action = ActionTrade(1)
+    action = ActionTrade(0)
     assert action_range.is_valid(action)
 
     # Now from resolve you are going to get a new action range
@@ -112,6 +113,10 @@ def test_acquire(state: State):
     ps.caravan = Caravan("YY")
 
     action_range = ActionAcquireRange(state, player_id=0)
+    # TODO: this is difficult! How do you acquire based on position?
+    #       This is because now position is important, as is that allows us to
+    #       Examine the most possible, intiuative way to process this?
+
     assert (
         str(action_range) == "acquire([0,1,2])"
     ), "We have 2 resource, and can obtain the top 3 cards from river"

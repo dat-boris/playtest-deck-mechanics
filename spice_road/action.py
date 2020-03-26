@@ -20,6 +20,7 @@ from playtest.action import (
     InvalidActionError,
 )
 
+from .constants import Param
 from .state import State, PlayerState
 from .components.resources import Resource
 from .components.cards import TraderCard, ScoringCard, ConversionCard
@@ -32,7 +33,7 @@ class ActionTrade(ActionSingleValue[State]):
 
     def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
         ps: PlayerState = s.get_player_state(player_id)
-        card = [s for s in ps.hand if s.uid == self.value][0]
+        card = ps.hand[self.value]
         if a:
             a.say(f"Player {player_id+1} playing card {card}")
         if card.__class__ == TraderCard:
@@ -60,7 +61,9 @@ class ActionTradeRange(ActionValueInSetRange[ActionTrade, State]):
             self.actionable = False
             return
         self.actionable = True
-        self.values_set = set([s.uid for s in ps.hand if s.can_trade(ps.caravan)])
+        self.values_set = set(
+            [i for i, s in enumerate(ps.hand) if s.can_trade(ps.caravan)]
+        )
 
     def value_to_position(self, value) -> int:
         return value
@@ -137,6 +140,13 @@ class ActionConvertRange(ActionValueInSetRange[ActionConvert, State]):
 
 class ActionAcquire(ActionSingleValue[State]):
     key = "acquire"
+
+    minimum_value: int = 0
+    maximum_value: int = Param.number_of_trader_slots
+
+    def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
+        # TODO: not implemented
+        return None
 
 
 class ActionAcquireRange(ActionValueInSetRange[ActionAcquire, State]):
