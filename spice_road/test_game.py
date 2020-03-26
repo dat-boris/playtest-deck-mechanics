@@ -61,7 +61,7 @@ def test_round(game: Game):
     next_player_id, possible_actions, _ = next(game_gen)
 
     assert next_player_id == 0
-    assert list(map(str, possible_actions)) == ["acquire([0,1,2,3,4])", "rest"]
+    assert list(map(str, possible_actions)) == ["acquire([0,1,2,3,4])", "rest", "wait"]
 
     action_to_act: ActionInstance = ActionAcquire(2)
     next_player_id, possible_actions, _ = game_gen.send(action_to_act)
@@ -69,7 +69,7 @@ def test_round(game: Game):
     ps = game.s.get_player_state(0)
     assert len(ps.hand) == 1
     assert ps.hand[0].test_watermark == "Obtained", "Card obtained"
-    assert len(ps.caravan) == 2, "Spent 2 resource to obtain card"
+    assert len(ps.caravan) == 3, "Spent 2 resource to obtain card"
     assert next_player_id == 1, "Moved to next player"
 
     action_to_act = ActionRest()
@@ -85,7 +85,7 @@ def test_round(game: Game):
     assert list(map(str, possible_actions)) == ["convert([YY])"]
     action_to_act = ActionConvert("YY")
     next_player_id, possible_actions, _ = game_gen.send(action_to_act)
-    assert ps.caravan == Resource("RR"), "Resource upgraded"
+    assert ps.caravan == Resource("RRY"), "Resource upgraded"
 
 
 @pytest.mark.xfail

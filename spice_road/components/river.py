@@ -1,15 +1,18 @@
 import logging
+import numpy as np
 from copy import copy
 from typing import List, Dict, TypeVar, Sequence, Generic, Type, Tuple
 
-from playtest.components import Card, Deck
+import gym.spaces as spaces
+
+from playtest.components import BaseCard, Deck
 
 from .resources import Resource
 from .cards import ScoringCard, TraderCard
 from .coins import Coin
 
 
-C = TypeVar("C", bound=Card)
+C = TypeVar("C", bound=BaseCard)
 R = TypeVar("R", bound=Resource)
 
 
@@ -72,6 +75,29 @@ class BaseRiver(Deck, Generic[C, R]):
     def reset(self):
         self.cards = copy(self.init_cards)
         self.resources = copy(self.init_resources)
+
+    def to_data(self):
+        return [
+            {"card": c.to_data(), "resources": r.to_data(),}
+            for c, r in zip(self.cards, self.resources)
+        ]
+
+    def get_observation_space(self) -> spaces.Space:
+        # TODO: need to show resources also!
+        return spaces.Box(
+            low=0,
+            high=self.generic_card.total_unique_cards,
+            shape=(self.max_size,),
+            dtype=np.uint8,
+        )
+
+    def to_numpy_data(self) -> np.ndarray:
+        # TODO: need to show resources also!
+        value_array = [c.to_numpy_data() for c in self.cards]
+        assert len(value_array) <= self.max_size
+        return np.array(
+            value_array + [0] * (self.max_size - len(value_array)), dtype=np.uint8
+        )
 
 
 class TraderRiver(BaseRiver[TraderCard, Resource]):

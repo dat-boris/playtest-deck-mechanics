@@ -163,6 +163,7 @@ class ActionAcquire(ActionSingleValue[State]):
         if a:
             a.say(f"Player {player_id+1} acquired {card} (r={resource})")
         ps.hand.add(card)
+        ps.caravan.add_resource(resource)
         s.trader_river.replace_from(s.trader_deck)
         return None
 
@@ -195,6 +196,9 @@ class ActionRestRange(ActionBooleanRange[ActionRest, State]):
 
 class ActionScore(ActionSingleValue[State]):
     key = "score"
+
+    minimum_value = 0
+    maximum_value = Param.number_of_scoring_slots
 
     def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
         ps = s.get_player_state(player_id)
@@ -230,4 +234,5 @@ class ActionFactory(BaseAF):
         ActionAcquireRange,
         ActionRestRange,
         ActionScoreRange,
+        ActionWaitRange,
     ]

@@ -112,7 +112,7 @@ def test_acquire(state: State):
         ],
         resources=[
             Resource("YYY"),
-            Resource("YY"),
+            Resource("RR"),
             Resource("Y"),
             Resource(""),
             Resource(""),
@@ -129,15 +129,20 @@ def test_acquire(state: State):
         str(action_range) == "acquire([0,1,2])"
     ), "We have 2 resource, and can obtain the top 3 cards from river"
 
-    # Acquire based on position
+    # Acquire based on positio n
     action = ActionAcquire(1)
     assert action_range.is_valid(action)
 
     action.resolve(state, player_id=0, a=Announcer())
 
     assert ps.hand[0].test_watermark == "obtained", "New card in player hands"
-    assert ps.caravan == Caravan("Y"), "Put down one resource for top card"
+    assert ps.caravan == Caravan(
+        "YRR"
+    ), "Put down one resource for top card, and got resources"
     # NOTE: currently just assume you put the cheapest resource for now
+    assert (
+        state.trader_river.to_data()[0]["resources"] == "YYYY"
+    ), "Test data representation"
     assert state.trader_river[0]["resources"] == Resource(
         "YYYY"
     ), "One extra resource put on head of the river"
