@@ -4,15 +4,17 @@ import yaml
 from copy import copy
 from typing import Dict
 
-from playtest.components import Card, Deck as BaseDeck
+import gym.spaces as spaces
+
+from playtest.components import BaseCard, Deck as BaseDeck
 from .resources import Resource
 
 
 def read_yaml(file_name):
-    return yaml.load_all(open(file_name, "r"))
+    return filter(lambda r: bool(r), yaml.load_all(open(file_name, "r")))
 
 
-class TraderCard(Card):
+class TraderCard(BaseCard):
     re_value = re.compile(r"([RGBY]*)\s*->\s*([RGBY]*)")
 
     total_unique_cards: int = 52
@@ -39,14 +41,12 @@ class TraderCard(Card):
     def dst(self) -> Resource:
         return self.value_to_struct(self.value)["dst"]
 
-    @staticmethod
-    def get_all_cards():
+    @classmethod
+    def get_all_cards(cls):
         data = read_yaml(
             os.path.join(os.path.dirname(os.path.realpath(__file__)), "trader.yml")
         )
-        return [
-            SpellCard(f"{d['src']} -> {d['dst']}", uid=i) for i, d in enumerate(data)
-        ]
+        return [cls(f"{d['src']} -> {d['dst']}", uid=i) for i, d in enumerate(data)]
 
     def can_trade(self, r: Resource) -> bool:
         return r.has_required(self.src)
@@ -89,9 +89,9 @@ class ConversionCard(TraderCard):
     def dst(self) -> Resource:
         raise KeyError()
 
-    @staticmethod
-    def get_all_cards():
-        return [ConversionCard("Convert(2)") * 2]
+    @classmethod
+    def get_all_cards(cls):
+        return [cls("Convert(2)") * 2]
 
     def can_trade(self, r: Resource) -> bool:
         return len(r) >= self.c
@@ -104,12 +104,15 @@ class ConversionCard(TraderCard):
             r2.add_resource(Resource(Resource.upgrade_char(val)))
         return r2
 
+    def get_observation_space(self) -> spaces.Space:
+        raise NotImplementedError(f"{self.__class__}")
 
-class TraderDeck(BaseDeck[Card]):
-    generic_card = Card
+
+class TraderDeck(BaseDeck[TraderCard]):
+    generic_card = TraderCard
 
 
-class ScoringCard(Card):
+class ScoringCard(BaseCard):
     regex_parse = re.compile(r"([RGBY]+) \((\d+)\)")
 
     total_unique_cards: int = 52
@@ -157,6 +160,9 @@ class ScoringCard(Card):
         """Check if the resource is sufficient for the cards
         """
         return r.has_required(self.target)
+
+    def get_observation_space(self) -> spaces.Space:
+        raise NotImplementedError(f"{self.__class__}")
 
 
 class ScoringDeck(BaseDeck[ScoringCard]):

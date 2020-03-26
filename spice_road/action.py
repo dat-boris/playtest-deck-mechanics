@@ -198,7 +198,7 @@ class ActionScore(ActionSingleValue[State]):
 
     def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
         ps = s.get_player_state(player_id)
-        card, resource = s.scoring_river.pop(index=self.value)
+        card, resource = s.scoring_river.pop(self.value)
         assert isinstance(resource, Coin)
         ps.caravan.sub_resource(card.target)
         ps.scored.add(card)
