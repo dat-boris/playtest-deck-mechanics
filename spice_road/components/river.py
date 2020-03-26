@@ -1,3 +1,5 @@
+import logging
+from copy import copy
 from typing import List, Dict, TypeVar, Sequence, Generic, Type, Tuple
 
 from playtest.components import Card, Deck
@@ -16,14 +18,21 @@ class BaseRiver(Deck, Generic[C, R]):
     # generic_card = None
     generic_resource: Type[R]
     resources: List[R]
+    init_resources: List[R]
 
     def __init__(self, cards=[], resources=None, **kwargs):
-        super().__init__(cards, **kwargs)
         self.resources = resources
         if resources is None:
-            self.resources = [self.generic_resource("") for _ in self.cards]
-        assert len(self.resources) == len(self.cards)
-        assert all([isinstance(r, self.generic_resource) for r in self.resources])
+            self.resources = [self.generic_resource("") for _ in cards]
+        self.init_resources = copy(self.resources)
+
+        super().__init__(cards, **kwargs)
+
+        assert len(self.resources) == len(
+            self.cards
+        ), f"We have {len(self.cards)} cards vs {len(self.resources)} resources"
+        assert all([isinstance(r, self.generic_resource)
+                    for r in self.resources])
 
     def add_resource(self, pos: int, resource: R):
         assert len(self.resources) >= pos, f"No resource found at position {pos}"
@@ -36,26 +45,50 @@ class BaseRiver(Deck, Generic[C, R]):
             "resources": self.resources[i],
         }
 
-    def add(self, card: C):
-        self.resources.append(self.generic_resource(""))
+    def add(self, card: C, resource=None):
+        if resource is None:
+            resource = self.generic_resource("")
+        self.resources.append(resource)
         self.cards.append(card)
+        assert len(self.cards) == len(
+            self.resources
+        ), f"We have {len(self.cards)} cards vs {len(self.resources)} resources"
 
     def remove(self, card: C):
         self.cards.remove(card)
         # TODO: remove token
         raise NotImplementedError()
 
-    def pop_at(self, pos:int) -> Tuple[C, R]:
+    def replace_from(self, deck: Deck):
+        if len(deck) > 0:
+            deck.deal(self, count=1)
+        else:
+            logging.warn(f"No more cards in deck {deck.__class__}")
+
+    def pop_at(self, pos: int) -> Tuple[C, R]:
         card = self.cards.pop(pos)
         resource = self.resources.pop(pos)
         return card, resource
+
+    def reset(self):
+        self.cards = copy(self.init_cards)
+        self.resources = copy(self.init_resources)
+
+
+class TraderRiver(BaseRiver[TraderCard, Resource]):
+    generic_card = TraderCard
+    generic_resource = Resource
 
 
 class ScoringRiver(BaseRiver[ScoringCard, Coin]):
     generic_card = ScoringCard
     generic_resource = Coin
 
-
-class TraderRiver(BaseRiver[TraderCard, Resource]):
-    generic_card = TraderCard
-    generic_resource = Resource
+    def pop_at(self, pos: int) -> Tuple[ScoringCard, Coin]:
+        """We only pop one coin from the list"""
+        card: ScoringCard = self.cards.pop(pos)
+        resource: Coin = self.resources[pos].pop_lowest(1)
+        # pop last resource
+        self.resources.pop()
+        assert len(self.cards) == len(self.resources)
+        return card, resource

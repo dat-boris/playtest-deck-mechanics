@@ -1,9 +1,11 @@
 import pytest
 
+from playtest.action import ActionInstance
+
 from .game import Game
 from .constants import Param
 
-from .action import ActionAcquire
+from .action import ActionAcquire, ActionTrade, ActionConvert, ActionRest
 
 from .components.cards import (
     TraderCard,
@@ -17,7 +19,7 @@ from .components.river import TraderRiver, ScoringRiver
 from .components.coins import Coin
 
 
-NUMBER_OF_PLAYERS = 4
+NUMBER_OF_PLAYERS = 2
 
 
 @pytest.fixture
@@ -26,56 +28,64 @@ def game() -> Game:
     g = Game(param=param)
     state = g.s
     state.scoring_river = ScoringRiver(
-        [
-            # Most expensive, need pay 1 coin for each item
-            {
-                "card": ScoringCard("RRRR (5)", uid=0, test_watermark="Scored"),
-                "coin": Coin("GGGG"),
-            },
-            {"card": ScoringCard("RRRRR (6)", uid=1), "coin": Coin("SSSS"),},
-            {"card": ScoringCard("RRRRRR (7)", uid=2), "coin": Coin(""),},
-            {"card": ScoringCard("RRRRRRR (8)", uid=3), "coin": Coin(""),},
-        ]
+        cards=[
+            ScoringCard("RRRR (5)", uid=0, test_watermark="Scored"),
+            ScoringCard("RRRRR (6)", uid=1),
+            ScoringCard("RRRRRR (7)", uid=2),
+            ScoringCard("RRRRRRR (8)", uid=3),
+        ],
+        resources=[Coin("GGGG"), Coin("SSSS"), Coin(""), Coin(""),],
     )
     state.trader_river = TraderRiver(
-        [
-            # Most expensive, need pay 1 coin for each item
-            {"card": TraderCard("-> YY", uid=0), "resources": Resource("YYY"),},
-            {
-                "card": TraderCard("-> YY", uid=1, test_watermark="Obtained"),
-                "resources": Resource("YY"),
-            },
-            {"card": TraderCard("-> YY", uid=2), "resources": Resource("Y"),},
-            {"card": TraderCard("-> YY", uid=3), "resources": Resource(""),},
-        ]
+        cards=[
+            TraderCard("-> YY", uid=0),
+            TraderCard("-> YY", uid=1),
+            ConversionCard("Convert(2)", uid=2, test_watermark="Obtained"),
+            TraderCard("-> YY", uid=3),
+        ],
+        resources=[Resource("YYY"), Resource("YY"), Resource("Y"), Resource(""),],
     )
     ps = state.players[0]
     ps.hand = TraderDeck([])
-    ps.caravan = Caravan("YY")
+    ps.caravan = Caravan("YYYY")
     return g
 
 
-@pytest.mark.xfail
 def test_round(game: Game):
     """# Game round
 
     Each player takes one of the above action from the rounds.
     """
     # Test playing player 0
-    game_gen = game.play_round()
+    game_gen = game.start()
     next_player_id, possible_actions, _ = next(game_gen)
 
     assert next_player_id == 0
-    # TODO: double check and validate
-    assert list(map(str, possible_actions)) == ["...", "rest"]
+    assert list(map(str, possible_actions)) == ["acquire([0,1,2,3,4])", "rest"]
 
-    action_to_act = ActionAcquire(1)
+    action_to_act: ActionInstance = ActionAcquire(2)
     next_player_id, possible_actions, _ = game_gen.send(action_to_act)
 
     ps = game.s.get_player_state(0)
     assert len(ps.hand) == 1
     assert ps.hand[0].test_watermark == "Obtained", "Card obtained"
+    assert len(ps.caravan) == 2, "Spent 2 resource to obtain card"
     assert next_player_id == 1, "Moved to next player"
+
+    action_to_act = ActionRest()
+    next_player_id, possible_actions, _ = game_gen.send(action_to_act)
+    assert next_player_id == 0
+
+    action_to_act = ActionTrade(0)
+    next_player_id, possible_actions, _ = game_gen.send(action_to_act)
+    assert next_player_id == 0
+    assert len(ps.hand) == 0
+    assert len(ps.used_hand) == 1
+
+    assert list(map(str, possible_actions)) == ["convert([YY])"]
+    action_to_act = ActionConvert("YY")
+    next_player_id, possible_actions, _ = game_gen.send(action_to_act)
+    assert ps.caravan == Resource("RR"), "Resource upgraded"
 
 
 @pytest.mark.xfail

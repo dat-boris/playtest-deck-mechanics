@@ -1,10 +1,13 @@
 from collections import Counter
 import numpy as np
-from typing import Dict, List
+from typing import Dict, List, TypeVar
 
 import gym.spaces as spaces
 
 from playtest.components import Component
+
+
+R = TypeVar("R", bound="Resource")
 
 
 class Resource(Component):
@@ -35,8 +38,7 @@ class Resource(Component):
         assert len(s) == 1, "Can only upgrade one at a time"
         token_name = cls.str_lookup[s]
         try:
-            token_next = cls.all_resources[cls.all_resources.index(
-                token_name) + 1]
+            token_next = cls.all_resources[cls.all_resources.index(token_name) + 1]
         except IndexError:
             return s
         return cls.reverse_lookup(token_next)
@@ -60,8 +62,7 @@ class Resource(Component):
     def struct_to_value(cls, stack: Dict[str, int]) -> str:
         return "".join(
             sorted(
-                ["".join([cls.reverse_lookup(r)] * count)
-                 for r, count in stack.items()]
+                ["".join([cls.reverse_lookup(r)] * count) for r, count in stack.items()]
             )
         )
 
@@ -116,16 +117,14 @@ class Resource(Component):
         theirs = required.stack
         assert sorted(my.keys()) == self.get_all_resources()
         self.value = self.struct_to_value(
-            {res: my_count - theirs.get(res, 0)
-             for res, my_count in my.items()}
+            {res: my_count - theirs.get(res, 0) for res, my_count in my.items()}
         )
 
     def sub_with_remainder(self, required: "Resource") -> "Resource":
         my = self.stack
         theirs = required.stack
         assert sorted(my.keys()) == self.get_all_resources()
-        result = {res: my_count - theirs.get(res, 0)
-                  for res, my_count in my.items()}
+        result = {res: my_count - theirs.get(res, 0) for res, my_count in my.items()}
         new_my_value = {}
         remainder = {}
         for k, v in result.items():
@@ -142,11 +141,10 @@ class Resource(Component):
         theirs = required.stack
         assert sorted(my.keys()) == self.get_all_resources()
         self.value = self.struct_to_value(
-            {res: my_count + theirs.get(res, 0)
-             for res, my_count in my.items()}
+            {res: my_count + theirs.get(res, 0) for res, my_count in my.items()}
         )
 
-    def pop_lower(self, amount) -> "Resource":
+    def pop_lowest(self: R, amount) -> R:
         """Pop number of cheapest resources"""
         assert len(self) >= amount, f"Must have {amount} resources"
         data = self.stack
@@ -166,4 +164,4 @@ class Caravan(Resource):
 
     def discard_to(self, down_to: int = 10):
         if len(self) >= down_to:
-            self.pop_lower(len(self) - down_to)
+            self.pop_lowest(len(self) - down_to)

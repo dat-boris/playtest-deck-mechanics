@@ -55,8 +55,8 @@ class State(FullState[PlayerState]):
     def __init__(self, param=None):
         self.trader_deck = TraderDeck(all_cards=True)
         self.scoring_deck = ScoringDeck(all_cards=True)
-        self.scoring_river = ScoringRiver([])
-        self.trader_river = TraderRiver([])
+        self.scoring_river = ScoringRiver(cards=[])
+        self.trader_river = TraderRiver(cards=[])
         super().__init__(param=param)
 
         self.reset()

@@ -1,4 +1,7 @@
 from playtest.game import Game as BaseGame
+from playtest.action import ActionRange
+
+from typing import Optional
 
 from .state import State
 from .action import ActionFactory
@@ -22,7 +25,15 @@ class Game(BaseGame[State, ActionFactory, Param]):
             # Note that get_player_action is a generator
             action = yield from self.get_player_action(i)
             self.announcer.say(f"Player {i+1} took action {action}")
-            action.resolve(self.state, player_id=i)
+            followup_action_range: Optional[ActionRange] = action.resolve(
+                self.state, player_id=i
+            )
+            if followup_action_range:
+                action = yield from self.get_player_action(
+                    i, accepted_action=[followup_action_range]
+                )
+                followup_action_range = action.resolve(self.state, player_id=i)
+                assert followup_action_range is None
 
     def is_end(self) -> bool:
         raise NotImplementedError()
