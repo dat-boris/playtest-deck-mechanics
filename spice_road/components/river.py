@@ -31,8 +31,7 @@ class BaseRiver(Deck, Generic[C, R]):
         assert len(self.resources) == len(
             self.cards
         ), f"We have {len(self.cards)} cards vs {len(self.resources)} resources"
-        assert all([isinstance(r, self.generic_resource)
-                    for r in self.resources])
+        assert all([isinstance(r, self.generic_resource) for r in self.resources])
 
     def add_resource(self, pos: int, resource: R):
         assert len(self.resources) >= pos, f"No resource found at position {pos}"
@@ -65,9 +64,9 @@ class BaseRiver(Deck, Generic[C, R]):
         else:
             logging.warn(f"No more cards in deck {deck.__class__}")
 
-    def pop_at(self, pos: int) -> Tuple[C, R]:
-        card = self.cards.pop(pos)
-        resource = self.resources.pop(pos)
+    def pop(self, index: int = -1) -> Tuple[C, R]:  # type: ignore
+        card = self.cards.pop(index)
+        resource = self.resources.pop(index)
         return card, resource
 
     def reset(self):
@@ -84,10 +83,10 @@ class ScoringRiver(BaseRiver[ScoringCard, Coin]):
     generic_card = ScoringCard
     generic_resource = Coin
 
-    def pop_at(self, pos: int) -> Tuple[ScoringCard, Coin]:
+    def pop(self, index: int = -1) -> Tuple[ScoringCard, Coin]:  # type: ignore
         """We only pop one coin from the list"""
-        card: ScoringCard = self.cards.pop(pos)
-        resource: Coin = self.resources[pos].pop_lowest(1)
+        card: ScoringCard = self.cards.pop(index)
+        resource: Coin = self.resources[index].pop_lowest(1)
         # pop last resource
         self.resources.pop()
         assert len(self.cards) == len(self.resources)
