@@ -48,7 +48,7 @@ def test_setup(state: State):
         assert isinstance(player_state.hand, TraderDeck)
         assert isinstance(player_state.scored, ScoringDeck)
         assert isinstance(player_state.coins, Coin)
-        assert len(player_state.hand) == 0
+        assert len(player_state.hand) == 2, "We start with 2 default cards"
         assert len(player_state.scored) == 0
 
 

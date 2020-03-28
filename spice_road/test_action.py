@@ -120,6 +120,8 @@ def test_acquire(state: State):
         ],
     )
     ps = state.players[0]
+    # Clear player's hand of default cards
+    ps.hand = TraderDeck([])
     ps.caravan = Caravan("YY")
     assert len(state.trader_river) == Param.number_of_trader_slots
 

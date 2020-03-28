@@ -6,7 +6,7 @@ from playtest import Param, SubState, FullState, Visibility
 from playtest.components import Component, Counter
 
 
-from .components.cards import TraderDeck, ScoringDeck
+from .components.cards import TraderCard, ConversionCard, TraderDeck, ScoringDeck
 from .components.river import ScoringRiver, TraderRiver
 from .components.resources import Caravan
 from .components.coins import Coin
@@ -28,7 +28,11 @@ class PlayerState(SubState):
     coins: Coin
 
     def __init__(self, param=None):
-        self.hand = TraderDeck([])
+        self.hand = TraderDeck([
+            # Each player start with two cards
+            TraderCard("-> YY", uid=0),
+            ConversionCard("Convert(2)", uid=1),
+        ])
         self.used_hand = TraderDeck([])
         self.scored = ScoringDeck([])
         self.coins = Coin("")
