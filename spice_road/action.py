@@ -10,6 +10,7 @@ from playtest.action import (
     ActionSingleValue,
     ActionSingleValueRange,
     ActionSingleValue,
+    ActionValueInSet,
     ActionValueInSetRange,
     ActionBoolean,
     ActionBooleanRange,
@@ -27,10 +28,11 @@ from .components.coins import Coin
 from .components.cards import TraderCard, ScoringCard, ConversionCard
 
 
-class ActionTrade(ActionSingleValue[State]):
+class ActionTrade(ActionValueInSet[State, int]):
     key = "trade"
-    minimum_value: int = 0
-    maximum_value: int = TraderCard.total_unique_cards + ScoringCard.total_unique_cards
+
+    value_set_mapping = list(range(Param.max_card_in_hand))
+    unique_value_count = Param.max_card_in_hand
 
     def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
         ps: PlayerState = s.get_player_state(player_id)
@@ -52,25 +54,24 @@ class ActionTrade(ActionSingleValue[State]):
             raise NotImplementedError(f"Unknown card: {card}")
 
 
-class ActionTradeRange(ActionValueInSetRange[ActionTrade, State]):
+class ActionTradeRange(ActionValueInSetRange[ActionTrade, State, int]):
     instance_class = ActionTrade
-    max_values_in_set = TraderCard.total_unique_cards
 
     def __init__(self, state: State, player_id: int):
         ps: PlayerState = state.get_player_state(player_id)
-        self.values_set = set()
+        self.possible_values = set()
         if len(ps.hand) == 0:
             self.actionable = False
             return
-        self.values_set = set(
+        self.possible_values = set(
             [i for i, s in enumerate(ps.hand) if s.can_trade(ps.caravan)]
         )
-        self.actionable = bool(self.values_set)
+        self.actionable = bool(self.possible_values)
 
 
-class ActionConvert(ActionSingleValue[State]):
+class ActionConvert(ActionValueInSet[State, str]):
     key = "convert"
-    all_possible_set_value: List[str] = (
+    value_set_mapping: List[str] = (
         list(
             map(
                 lambda s: "".join(s),
@@ -90,14 +91,9 @@ class ActionConvert(ActionSingleValue[State]):
             )
         )
     )
-    minimum_value: int = 0
-    maximum_value: int = len(all_possible_set_value)
+    unique_value_count = len(value_set_mapping)
 
-    value: str  # type: ignore
-
-    # Note that we use this as a str value
-    def __init__(self, value: str):
-        super().__init__(value)  # type: ignore
+    value: str
 
     def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
         # Converting given values
@@ -113,43 +109,34 @@ class ActionConvert(ActionSingleValue[State]):
         return None
 
 
-class ActionConvertRange(ActionValueInSetRange[ActionConvert, State]):
+class ActionConvertRange(ActionValueInSetRange[ActionConvert, State, str]):
     instance_class = ActionConvert
-    max_values_in_set = ActionConvert.maximum_value
-
-    values_set: Set[str]  # type: ignore
 
     def __init__(self, state: State, player_id: int, trade_count: Optional[int] = None):
         ps = state.get_player_state(player_id)
-        self.values_set = set()
         if trade_count is None:
             self.actionable = False
+            self.possible_values = set()
             return
         self.actionable = True
         assert (
             len(ps.caravan) >= trade_count
         ), f"Player {player_id+1} must have enough resource {ps.caravan}"
-        self.values_set = set(
+        self.possible_values = set(
             [
                 r
-                for r in ActionConvert.all_possible_set_value
+                for r in ActionConvert.value_set_mapping
                 if len(r) == trade_count and ps.caravan.has_required(Resource(r))
             ]
         )
-        assert self.values_set, f"No trade possible with {ps.caravan}"
-
-    def value_to_position(self, value: str) -> int:
-        return ActionConvert.all_possible_set_value.index(value)
-
-    def position_to_value(self, pos: int) -> str:
-        return ActionConvert.all_possible_set_value[pos]
+        assert self.possible_values, f"No trade possible with {ps.caravan}"
 
 
-class ActionAcquire(ActionSingleValue[State]):
+class ActionAcquire(ActionValueInSet[State, int]):
     key = "acquire"
 
-    minimum_value: int = 0
-    maximum_value: int = Param.number_of_trader_slots
+    value_set_mapping = list(range(Param.number_of_trader_slots))
+    unique_value_count = Param.number_of_trader_slots
 
     def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
         # Now leave the resources you need
@@ -168,17 +155,16 @@ class ActionAcquire(ActionSingleValue[State]):
         return None
 
 
-class ActionAcquireRange(ActionValueInSetRange[ActionAcquire, State]):
+class ActionAcquireRange(ActionValueInSetRange[ActionAcquire, State, int]):
     instance_class = ActionAcquire
-    max_values_in_set = Param.number_of_trader_slots
 
     def __init__(self, state: State, player_id: int):
         ps: PlayerState = state.get_player_state(player_id)
         number_of_resources = len(ps.caravan)
-        self.values_set = set(
+        self.possible_values = set(
             [i for i, s in enumerate(state.trader_deck) if i <= number_of_resources]
         )
-        self.actionable = bool(self.values_set)
+        self.actionable = bool(self.possible_values)
 
 
 class ActionRest(ActionBoolean[State]):
@@ -194,11 +180,11 @@ class ActionRestRange(ActionBooleanRange[ActionRest, State]):
     instance_class = ActionRest
 
 
-class ActionScore(ActionSingleValue[State]):
+class ActionScore(ActionValueInSet[State, int]):
     key = "score"
 
-    minimum_value = 0
-    maximum_value = Param.number_of_scoring_slots
+    value_set_mapping = list(range(Param.number_of_scoring_slots))
+    unique_value_count = Param.number_of_scoring_slots
 
     def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
         ps = s.get_player_state(player_id)
@@ -211,20 +197,19 @@ class ActionScore(ActionSingleValue[State]):
         return None
 
 
-class ActionScoreRange(ActionValueInSetRange[ActionScore, State]):
+class ActionScoreRange(ActionValueInSetRange[ActionScore, State, int]):
     instance_class = ActionScore
-    max_values_in_set = Param.number_of_scoring_slots
 
     def __init__(self, state: State, player_id: int):
         ps: PlayerState = state.get_player_state(player_id)
-        self.values_set = set(
+        self.possible_values = set(
             [
                 i
                 for i, s in enumerate(state.scoring_river)
                 if ps.caravan.has_required(s.target)
             ]
         )
-        self.actionable = bool(self.values_set)
+        self.actionable = bool(self.possible_values)
 
 
 class ActionFactory(BaseAF):

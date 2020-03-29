@@ -7,7 +7,8 @@ from importlib import import_module
 
 import gym
 
-from playtest.env import GameWrapperEnvironment, HumanAgent, EnvironmentInteration
+from playtest.env import GameWrapperEnvironment, EnvironmentInteration
+from playtest.agents import HumanAgent
 
 AGENT_COUNT = 2
 
