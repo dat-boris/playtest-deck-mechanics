@@ -21,7 +21,7 @@ numpy = "*"
 tensorflow = "==1.15.2"
 keras-rl = {editable = true,git = "https://github.com/dat-boris/keras-rl.git",ref = "add-multi-agent"}
 wandb = "*"
-playtest = ">=0.0.7"
+playtest = ">=0.0.10"
 
 [requires]
 python_version = "3.7"
