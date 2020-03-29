@@ -112,8 +112,11 @@ class ScoringRiver(BaseRiver[ScoringCard, Coin]):
     def pop(self, index: int = -1) -> Tuple[ScoringCard, Coin]:  # type: ignore
         """We only pop one coin from the list"""
         card: ScoringCard = self.cards.pop(index)
-        resource: Coin = self.resources[index].pop_lowest(1)
-        # pop last resource
+        if len(self.resources[index]) > 0:
+            resource: Coin = self.resources[index].pop_lowest(1)
+        else:
+            resource = Coin("")
+        # pop last resource - so we keep number of resource same
         self.resources.pop()
         assert len(self.cards) == len(self.resources)
         return card, resource

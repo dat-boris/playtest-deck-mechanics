@@ -17,7 +17,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Interactive Agent for ma-gym")
     parser.add_argument("game", help="Game ID (folder name) to play")
     parser.add_argument(
-        "--episodes", type=int, default=1, help="episodes (default: %(default)s)"
+        "--players", type=int, default=4, help="episodes (default: %(default)s)"
+    )
+    parser.add_argument(
+        "--ai", action="store_true", help="Play against AI"
     )
     args = parser.parse_args()
 
@@ -27,10 +30,11 @@ if __name__ == "__main__":
     param_class = getattr(game_module, "Param", None)
     assert param_class, f"Cannot find {args.game}.game.Param class"
 
-    __game = game_class(param_class(number_of_players=AGENT_COUNT))
+    __game = game_class(param_class(number_of_players=args.players))
     env: GameWrapperEnvironment = GameWrapperEnvironment(__game)
 
+    assert not args.ai, "AI should be implemented"
     agents = [HumanAgent(env) for i in range(env.n_agents)]
 
-    game = EnvironmentInteration(env, agents, episodes=args.episodes)
+    game = EnvironmentInteration(env, agents, episodes=1)
     game.play()

@@ -33,6 +33,7 @@ class ActionTrade(ActionValueInSet[State, int]):
 
     value_set_mapping = list(range(Param.max_card_in_hand))
     unique_value_count = Param.max_card_in_hand
+    coerce_int = True
 
     def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
         ps: PlayerState = s.get_player_state(player_id)
@@ -137,6 +138,7 @@ class ActionAcquire(ActionValueInSet[State, int]):
 
     value_set_mapping = list(range(Param.number_of_trader_slots))
     unique_value_count = Param.number_of_trader_slots
+    coerce_int = True
 
     def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
         # Now leave the resources you need
@@ -162,7 +164,7 @@ class ActionAcquireRange(ActionValueInSetRange[ActionAcquire, State, int]):
         ps: PlayerState = state.get_player_state(player_id)
         number_of_resources = len(ps.caravan)
         self.possible_values = set(
-            [i for i, s in enumerate(state.trader_deck) if i <= number_of_resources]
+            [i for i, s in enumerate(state.trader_river) if i <= number_of_resources]
         )
         self.actionable = bool(self.possible_values)
 
@@ -185,6 +187,7 @@ class ActionScore(ActionValueInSet[State, int]):
 
     value_set_mapping = list(range(Param.number_of_scoring_slots))
     unique_value_count = Param.number_of_scoring_slots
+    coerce_int = True
 
     def resolve(self, s: State, player_id: int, a=None) -> Optional[ActionRange]:
         ps = s.get_player_state(player_id)
