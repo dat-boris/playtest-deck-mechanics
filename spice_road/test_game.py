@@ -61,7 +61,7 @@ def test_round(game: Game):
     next_player_id, possible_actions, _ = next(game_gen)
 
     assert next_player_id == 0
-    assert list(map(str, possible_actions)) == ["acquire([0,1,2,3,4])", "rest"]
+    assert list(map(str, possible_actions)) == ["acquire([0,1,2,3])", "rest"]
 
     action_to_act: ActionInstance = ActionAcquire(2)
     next_player_id, possible_actions, _ = game_gen.send(action_to_act)

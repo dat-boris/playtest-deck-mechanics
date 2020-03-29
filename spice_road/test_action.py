@@ -154,8 +154,7 @@ def test_acquire(state: State):
         "YYYY"
     ), "One extra resource put on head of the river"
     assert state.trader_river[1]["card"].uid == 92, "Card shifted over by 1"
-    assert state.trader_river[1]["resources"] == Resource(
-        "Y"), "No resource added"
+    assert state.trader_river[1]["resources"] == Resource("Y"), "No resource added"
     assert (
         len(state.trader_river) == Param.number_of_trader_slots
     ), "River card was restored"
@@ -202,7 +201,7 @@ def test_score(state: State):
             ScoringCard("RRRRRRR (8)", uid=93),
             ScoringCard("RRRRRRRR (9)", uid=93),
         ],
-        resources=[Coin("GGGG"), Coin("SSSS"), Coin(""), Coin(""), Coin(""), ],
+        resources=[Coin("GGGG"), Coin("SSSS"), Coin(""), Coin(""), Coin(""),],
     )
     ps = state.players[0]
     ps.caravan = Caravan("RRRRR")
@@ -210,8 +209,7 @@ def test_score(state: State):
     assert len(state.scoring_river) == Param.number_of_scoring_slots
 
     action_range = ActionScoreRange(state, player_id=0)
-    assert str(
-        action_range) == "score([0,1])", "We have enough resource to score the 2"
+    assert str(action_range) == "score([0,1])", "We have enough resource to score the 2"
 
     action = ActionScore(0)
     assert action_range.is_valid(action)
@@ -220,8 +218,7 @@ def test_score(state: State):
 
     assert ps.coins == Coin("G")
     assert ps.scored[0].test_watermark == "Scored", "Obtained scored card"
-    assert len(
-        state.scoring_river) == Param.number_of_scoring_slots, "Card is replaced"
+    assert len(state.scoring_river) == Param.number_of_scoring_slots, "Card is replaced"
 
 
 @pytest.mark.xfail

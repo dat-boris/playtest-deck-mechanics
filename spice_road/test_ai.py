@@ -33,11 +33,14 @@ def test_training(env: GameWrapperEnvironment):
 
 
 def test_playing(env):
-    at = KerasDQNAgent(env)
-
-    agents = [
-        KerasDQNAgent(env, weight_file=AGENT_FILENAME) for _ in range(env.n_agents)
-    ]
+    if not os.path.exists(AGENT_FILENAME):
+        agents = [KerasDQNAgent(env) for _ in range(env.n_agents)]
+        # create agent file
+        train_agents(env, agents, save_filenames=[AGENT_FILENAME], nb_steps=10)
+    else:
+        agents = [
+            KerasDQNAgent(env, weight_file=AGENT_FILENAME) for _ in range(env.n_agents)
+        ]
 
     # Let's play 4 rounds of game!
     game = EnvironmentInteration(env, agents, rounds=4)
