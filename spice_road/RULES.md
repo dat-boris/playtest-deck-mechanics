@@ -21,7 +21,7 @@ Each player will have in their own playing area:
 Each player, in order, gets:
 * Start player: 3 turmeric
 * 2nd and 3rd players: 4 turmeric each
-* 4th and 5th players: 3 turmeric and 1 saffron each
+* 4th and 5th players: 3 turmeric and 1 saffron each
 
 Also open up:
 * 6 trader cards.
@@ -50,16 +50,16 @@ Each player have caravan cards to which you can put your spice.
 The Caravan card is limited to 10 spices, and you cannot exceed the capacity
 of the caravan card
 
-## Trade card: Conversion
-
-Another set of cards is to allow conversion.  The conversion card
-allow us to follow the rule of resources to upgrade the spices.
-
 ## Trade card: Exchange
 
 There are two types of trade cards.  The exchange cards take a set of
 source spices to the target.  As long as you have enough spices,
 you can trade the spices for a set in the target space for spice.
+
+## Trade card: Conversion
+
+Another set of cards is to allow conversion.  The conversion card
+allow us to follow the rule of resources to upgrade the spices.
 
 # Actions
 Each round, you can take one of the following actions:

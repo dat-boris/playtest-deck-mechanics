@@ -21,7 +21,7 @@ install:
 script:
   - black --check --diff $SOURCES
   - mypy $SOURCES --ignore-missing-imports
-  - pytest --cov=playtest
+  - pytest --cov=playtest $SOURCES
 
 after_success:
   - codecov # submit coverage
