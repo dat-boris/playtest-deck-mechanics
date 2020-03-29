@@ -1,0 +1,27 @@
+# misc
+notifications:
+  email: false
+sudo: false
+
+# python settings
+language: python
+python:
+  - "3.7"
+
+# for use in linting and static analysis
+env:
+  - SOURCES="spice_road"
+
+# install packages
+install:
+  - pip install pipenv
+  - pipenv install --dev
+
+# run test
+script:
+  - black --check --diff $SOURCES
+  - mypy $SOURCES --ignore-missing-imports
+  - pytest --cov=playtest
+
+after_success:
+  - codecov # submit coverage

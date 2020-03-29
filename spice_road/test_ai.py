@@ -36,8 +36,7 @@ def test_playing(env):
     at = KerasDQNAgent(env)
 
     agents = [
-        KerasDQNAgent(env, weight_file=AGENT_FILENAME)
-        for _ in range(env.n_agents)
+        KerasDQNAgent(env, weight_file=AGENT_FILENAME) for _ in range(env.n_agents)
     ]
 
     # Let's play 4 rounds of game!
