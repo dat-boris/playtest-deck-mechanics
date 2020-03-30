@@ -10,7 +10,7 @@ python:
 
 # for use in linting and static analysis
 env:
-  - SOURCES="spice_road"
+  - SOURCES="spice_road play.py train.py"
 
 # install packages
 install:

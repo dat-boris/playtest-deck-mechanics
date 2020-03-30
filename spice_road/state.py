@@ -1,4 +1,3 @@
-import pytest
 from typing import Dict, Type
 
 
@@ -41,7 +40,6 @@ class PlayerState(SubState):
         self.caravan = Caravan("")
 
 
-@pytest.mark.xfail
 class State(FullState[PlayerState]):
     player_state_class = PlayerState
 
