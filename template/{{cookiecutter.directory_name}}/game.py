@@ -8,10 +8,10 @@ NUMBER_OF_ROUNDS = 3
 
 
 class Game(BaseGame[State, ActionFactory, Param]):
-    def __init__(self, param):
+    def __init__(self, param, **kwargs):
         self.state = State(param=param)
         self.action_factory = ActionFactory(param=param)
-        super().__init__(param=param)
+        super().__init__(param=param, **kwargs)
 
     def start(self):
         for _ in range(NUMBER_OF_ROUNDS):

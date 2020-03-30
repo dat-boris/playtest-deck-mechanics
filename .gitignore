@@ -1,3 +1,7 @@
+# Template generated example game
+example_game
+example_agent*.h5f
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

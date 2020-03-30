@@ -1,0 +1,23 @@
+count: 1
+target: YYR
+vp: 3
+---
+count: 1
+target: YYRR
+vp: 4
+---
+count: 1
+target: RRRR
+vp: 6
+---
+count: 1
+target: YYBB
+vp: 6
+---
+count: 1
+target: YYYBB
+vp: 8
+---
+count: 1
+target: RRBB
+vp: 8
