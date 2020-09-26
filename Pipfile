@@ -18,7 +18,7 @@ cookiecutter = "*"
 gym = "*"
 numpy = "*"
 # Require older version of tensorflow
-tensorflow = "==1.15.2"
+tensorflow = "==1.15.4"
 keras-rl = {editable = true,git = "https://github.com/dat-boris/keras-rl.git",ref = "add-multi-agent"}
 wandb = "*"
 playtest = ">=0.0.10"
